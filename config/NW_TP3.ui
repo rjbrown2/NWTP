@@ -410,7 +410,7 @@
     <string>Quantity</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="sellIndividul">
+  <widget class="QLineEdit" name="sellIndividual">
    <property name="geometry">
     <rect>
      <x>365</x>

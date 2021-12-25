@@ -8,6 +8,8 @@ from PyQt5.QtGui import QDoubleValidator, QStandardItemModel, QStandardItem
 import constants
 import recipes
 
+total_ingr_cost = 0.0
+
 
 class Ui(QtWidgets.QWidget):
     def __init__(self, parent=None):
@@ -19,10 +21,17 @@ class Ui(QtWidgets.QWidget):
         self.sellCombo = self.findChild(QtWidgets.QComboBox, "sell_comboBox")
         self.sellCombo.currentTextChanged.connect(self.sell_combo_selected)
         self.buyQuantity = self.findChild(QtWidgets.QLineEdit, "buyQuantity")
+        self.buyQuantity.setReadOnly(True)
+        self.sellQuantity = self.findChild(QtWidgets.QLineEdit, "sellQuantity")
+        self.sellQuantity.setReadOnly(True)
         self.buyIndividual = self.findChild(QtWidgets.QLineEdit, "buyIndividual")
         self.buyIndividual.setReadOnly(True)
+        self.sellIndividual = self.findChild(QtWidgets.QLineEdit, "sellIndividual")
+        self.sellIndividual.setReadOnly(True)
         self.buyFlip = self.findChild(QtWidgets.QLineEdit, "buyFlip")
         self.buyFlip.setReadOnly(True)
+        self.sellFlip = self.findChild(QtWidgets.QLineEdit, "sellFlip")
+        self.sellFlip.setReadOnly(True)
         self.capital = self.findChild(QtWidgets.QLineEdit, "Capital")
         self.onlyDouble = QDoubleValidator(0.0, 500000.00, 2)
         # Validate capital input (min, max, decimal) Max not working as intended
@@ -30,9 +39,12 @@ class Ui(QtWidgets.QWidget):
         self.debug = self.findChild(QtWidgets.QTextEdit, "debug")
         self.debug_tree = self.findChild(QtWidgets.QTreeView, "debugTreeView")
         self.model = QStandardItemModel()
-        self.model.setHorizontalHeaderLabels(["Recipe", "Qty"])
+        self.model.setHorizontalHeaderLabels(["Recipe", "Qty", "Cost"])
         self.debug_tree.header().setDefaultSectionSize(180)
         self.debug_tree.setModel(self.model)
+        self.debug_tree.setColumnWidth(0, 150)
+        self.debug_tree.setColumnWidth(1, 50)
+        self.debug_tree.setColumnWidth(2, 50)
         self.show()
 
     def sell_combo_selected(self):
@@ -44,7 +56,19 @@ class Ui(QtWidgets.QWidget):
 
         self.process_output(output)  # Fill QTreeView
         self.debug.setText(str(output))  # Fill RichTextBox
-        # TODO:  Fill Sell Boxes?  Conversions from Buy?
+        # TODO:  Verify formulas for sell boxes
+        print(total_ingr_cost)
+        capital = float(self.capital.text())
+
+        can_make = math.floor(capital / total_ingr_cost)
+        self.sellQuantity.setText(str(can_make))
+        p = lookup_prices(item)
+
+        sell_ind = can_make * float(p[1])       # Formulate and set sell individual
+        self.sellIndividual.setText(str(sell_ind))
+
+        sell_flip = sell_ind - capital          # Formulate and set sell flip
+        self.sellFlip.setText(str(sell_flip))
 
     def process_output(self, data_in):
         self.model.setRowCount(0)
@@ -66,8 +90,14 @@ class Ui(QtWidgets.QWidget):
                     ingr.setEditable(False)
                     qty.setEditable(False)
 
+                    p = lookup_prices(t[1])
+                    cost = float(p[0]) * float(t[0])
+                    global total_ingr_cost
+                    total_ingr_cost += cost
+                    buy_price = QStandardItem(str(cost))
+
                     parent.appendRow([
-                        ingr, qty    # ingr col1: qty col2
+                        ingr, qty, buy_price  # ingr col1: qty col2
                     ])
                 except IndexError:
                     print("Index Error")
@@ -82,11 +112,8 @@ class Ui(QtWidgets.QWidget):
 
         capital = float(self.capital.text())
 
-        for line in line_list:
-            if item == line[0]:
-                buy_price = float(line[1])
-                sell_price = float(line[2])
-                break
+        p = lookup_prices(item)
+        buy_price, sell_price = p[0], p[1]
 
         can_buy = math.floor(capital / buy_price)
         buy_individual = sell_price * can_buy
@@ -104,6 +131,16 @@ def lookup_dump_data(item):
             trans_item = piece[0]
             break
     return trans_item
+
+
+def lookup_prices(item):
+    price_list = []
+    for elem in line_list:
+        if item == elem[0]:
+            price_list.append(float(elem[1]))
+            price_list.append(float(elem[2]))
+            break
+    return price_list
 
 
 if __name__ == "__main__":
