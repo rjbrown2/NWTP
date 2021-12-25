@@ -5,10 +5,11 @@ import math
 from PyQt5.QtGui import QDoubleValidator
 
 import constants
-import recipies
+import recipes
 import signal
 
 from PyQt5.QtCore import QCoreApplication
+
 
 class Ui(QtWidgets.QWidget):
     def __init__(self, parent=None):
@@ -21,11 +22,15 @@ class Ui(QtWidgets.QWidget):
         self.sellCombo.currentTextChanged.connect(self.sell_combo_selected)
         self.buyQuantity = self.findChild(QtWidgets.QLineEdit, "buyQuantity")
         self.buyIndividual = self.findChild(QtWidgets.QLineEdit, "buyIndividual")
+        self.buyIndividual.setReadOnly(True)
         self.buyFlip = self.findChild(QtWidgets.QLineEdit, "buyFlip")
+        self.buyFlip.setReadOnly(True)
         self.capital = self.findChild(QtWidgets.QLineEdit, "Capital")
         self.onlyDouble = QDoubleValidator(0.0, 500000.00, 2)
+        # Validate capital input (min, max, decimal) Max not working as inteded
         self.capital.setValidator(self.onlyDouble)
         self.debug = self.findChild(QtWidgets.QTextEdit, "debug")
+        self.debug_tree = self.findChild(QtWidgets.QTreeView, "debugTreeView")
         self.show()
 
     def sell_combo_selected(self):
@@ -33,7 +38,7 @@ class Ui(QtWidgets.QWidget):
         trans_item = lookup_dump_data(item)
         print("LOOKUP: " + item)
         print("FOUND: " + trans_item)
-        output = recipies.print_results(str(trans_item))
+        output = recipes.print_results(str(trans_item))
         self.debug.setText(str(output))
         # TODO:  Fill Sell Boxes?  Conversions from Buy?
 
@@ -57,14 +62,16 @@ class Ui(QtWidgets.QWidget):
         self.buyIndividual.setText(str(buy_individual))
         self.buyFlip.setText(str(buy_profit))
 
+
 def lookup_dump_data(item):
     dict = constants.dict
     trans_item = ""
     for piece in dict:
         if item == piece[1]:
-            trans_item  = piece[0]
+            trans_item = piece[0]
             break
     return trans_item
+
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal.SIG_DFL)

@@ -1,5 +1,6 @@
 import constants
 
+
 class Recipe:
     def __init__(self, recipe, ingrs, qtys, has_sub_recipe=False, sub_recipe=None):
         self.recipe = recipe
@@ -8,6 +9,7 @@ class Recipe:
         self.qtys = qtys
         self.has_sub_recipe = has_sub_recipe
         self.sub_recipe = sub_recipe
+
 
 def pull_recipe(recipe_name):
     ingrlist = []
@@ -65,36 +67,37 @@ def pull_recipe(recipe_name):
     except FileNotFoundError:
         print("File not found!")
 
+
 def print_results(recipe):
     output_string = ""
     recipe = pull_recipe(str(recipe))
     # This recursion works yo
     while recipe.has_sub_recipe:
-        output_string +=recipie_lookup_dump_data(recipe.recipe) + " requires:\n"
+        output_string += recipe_lookup_dump_data(recipe.recipe) + " requires:\n"
         for i, j in zip(recipe.ingrs, recipe.qtys):
-            output_string +=recipie_lookup_dump_data(i) + " " + j + "\n"
+            output_string += j + " " + recipe_lookup_dump_data(i) + "\n"
         output_string += "\n"
         recipe = recipe.sub_recipe
-    output_string += recipie_lookup_dump_data(recipe.recipe) + " requires: \n"
+    output_string += recipe_lookup_dump_data(recipe.recipe) + " requires: \n"
     for i, j in zip(recipe.ingrs, recipe.qtys):
-        output_string += recipie_lookup_dump_data(i) + " " + j +"\n"
+        output_string += j + " " + recipe_lookup_dump_data(i) + "\n"
     return output_string
+
 
 # TODO: Add a way to determine the cheapest of "wood"
 # TODO: Add a way to determine the cheapest of "hide"
 # TODO: Add a way to determine the cheapest of "fiber"
 
-def recipie_lookup_dump_data(item):
+def recipe_lookup_dump_data(item):
     dict = constants.dict
-    print("RECIPIE LOOKUP DATA: " + item)
+    print("recipe LOOKUP DATA: " + item)
     trans_item = ""
     for piece in dict:
         if item == piece[0]:
-            trans_item  = piece[1]
+            trans_item = piece[1]
             break
-        #else: print("NOTHING FOUND")
+        # else: print("NOTHING FOUND")
     return trans_item
-
 
 # def main():
 #     recipe = pull_recipe("IngotT4")

@@ -596,7 +596,17 @@
     <rect>
      <x>10</x>
      <y>140</y>
-     <width>751</width>
+     <width>291</width>
+     <height>211</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QTreeView" name="debugTreeView">
+   <property name="geometry">
+    <rect>
+     <x>320</x>
+     <y>140</y>
+     <width>271</width>
      <height>211</height>
     </rect>
    </property>
