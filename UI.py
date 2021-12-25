@@ -33,6 +33,7 @@ class Ui(QtWidgets.QWidget):
     def sell_combo_selected(self):
         item = self.sellCombo.currentText()
         trans_item = lookup_dump_data(item)
+        print("LOOKUP: " + item)
         print("FOUND: " + trans_item)
         output = recipies.print_results(str(trans_item))
         self.debug.setText(str(output))
