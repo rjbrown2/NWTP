@@ -73,14 +73,14 @@ def print_results(recipe):
     recipe = pull_recipe(str(recipe))
     # This recursion works yo
     while recipe.has_sub_recipe:
-        output_string += recipe_lookup_dump_data(recipe.recipe) + " requires:\n"
+        output_string += recipe_lookup_dump_data(recipe.recipe) + ":"  # recipe requires
         for i, j in zip(recipe.ingrs, recipe.qtys):
-            output_string += j + " " + recipe_lookup_dump_data(i) + "\n"
+            output_string += j + "-" + recipe_lookup_dump_data(i) + ","  # new line for each ingredient
         output_string += "\n"
         recipe = recipe.sub_recipe
-    output_string += recipe_lookup_dump_data(recipe.recipe) + " requires: \n"
+    output_string += recipe_lookup_dump_data(recipe.recipe) + ":"  # recipe requires
     for i, j in zip(recipe.ingrs, recipe.qtys):
-        output_string += j + " " + recipe_lookup_dump_data(i) + "\n"
+        output_string += j + "-" + recipe_lookup_dump_data(i) + ","  # new line for each ingredient
     return output_string
 
 

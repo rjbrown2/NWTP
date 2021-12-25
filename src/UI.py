@@ -1,14 +1,12 @@
-from PyQt5 import QtWidgets, uic
-import sys
 import math
+import signal
+import sys
 
-from PyQt5.QtGui import QDoubleValidator
+from PyQt5 import QtWidgets, uic
+from PyQt5.QtGui import QDoubleValidator, QStandardItemModel, QStandardItem
 
 import constants
 import recipes
-import signal
-
-from PyQt5.QtCore import QCoreApplication
 
 
 class Ui(QtWidgets.QWidget):
@@ -27,10 +25,14 @@ class Ui(QtWidgets.QWidget):
         self.buyFlip.setReadOnly(True)
         self.capital = self.findChild(QtWidgets.QLineEdit, "Capital")
         self.onlyDouble = QDoubleValidator(0.0, 500000.00, 2)
-        # Validate capital input (min, max, decimal) Max not working as inteded
+        # Validate capital input (min, max, decimal) Max not working as intended
         self.capital.setValidator(self.onlyDouble)
         self.debug = self.findChild(QtWidgets.QTextEdit, "debug")
         self.debug_tree = self.findChild(QtWidgets.QTreeView, "debugTreeView")
+        self.model = QStandardItemModel()
+        self.model.setHorizontalHeaderLabels(["Recipe", "Qty"])
+        self.debug_tree.header().setDefaultSectionSize(180)
+        self.debug_tree.setModel(self.model)
         self.show()
 
     def sell_combo_selected(self):
@@ -39,8 +41,34 @@ class Ui(QtWidgets.QWidget):
         print("LOOKUP: " + item)
         print("FOUND: " + trans_item)
         output = recipes.print_results(str(trans_item))
+        self.process_output(output)
         self.debug.setText(str(output))
         # TODO:  Fill Sell Boxes?  Conversions from Buy?
+
+    def process_output(self, data_in):
+        self.model.setRowCount(0)
+        recipe_split = data_in.split("\n")
+        # temp = data_in.split("\n")[0]
+        # parent = QStandardItem(temp.split(":")[0])
+        print(data_in)
+        #  Iterate recipes within string
+        for r in recipe_split:
+            parent = QStandardItem(r.split(":")[0])  # Split recipe name from ingredients
+            ingrs = r.split(":")[1]  # Split ingredients from recipe name
+
+            # Iterate ingredients in recipe and split ingr from qty
+            for i in ingrs.split(","):
+                print(i)
+                t = i.split("-")
+                # For loop causes index out of range when using t[1] outside of try except, unsure why
+                try:
+                    parent.appendRow([
+                        QStandardItem(t[1]), QStandardItem(t[0])    # ingr t[1] col1: qty t[0] col2
+                    ])
+                except IndexError:
+                    print("Index Error")
+
+            self.model.appendRow(parent)
 
     def buy_combo_selected(self):
         item = self.buyCombo.currentText()
