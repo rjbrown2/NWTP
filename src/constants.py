@@ -1,5 +1,5 @@
-RECIPE_DUMP = "javelindata_crafting.csv"
-INGREDIENTS = "ingredients.txt"
+RECIPE_DUMP = "../config/javelindata_crafting.csv"
+INGREDIENTS = "../config/ingredients.txt"
 
 dict = [
     ["Crossweave", "Cheapest Obs. Crossweave"],

@@ -14,8 +14,7 @@ from PyQt5.QtCore import QCoreApplication
 class Ui(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super(Ui, self).__init__()
-        # self.ui = loadUI(os.path.join(root, 'NW_TP3.ui'), baseinstance=self)
-        uic.loadUi('NW_TP3.ui', self)
+        uic.loadUi('../config/NW_TP3.ui', self)
         self.setWindowTitle("New World Trading Post")
         self.buyCombo = self.findChild(QtWidgets.QComboBox, "buy_comboBox")
         self.buyCombo.currentTextChanged.connect(self.buy_combo_selected)
