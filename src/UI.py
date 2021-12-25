@@ -10,7 +10,6 @@ import signal
 
 from PyQt5.QtCore import QCoreApplication
 
-
 class Ui(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super(Ui, self).__init__()
@@ -36,15 +35,12 @@ class Ui(QtWidgets.QWidget):
         print("FOUND: " + trans_item)
         output = recipies.print_results(str(trans_item))
         self.debug.setText(str(output))
+        # TODO:  Fill Sell Boxes?  Conversions from Buy?
 
     def buy_combo_selected(self):
         item = self.buyCombo.currentText()
-
-        # TODO:  Add Error Checking for Capital.  MUST ONLY BE POSITIVE Float
-
         buy_individual, buy_profit, buy_price, sell_price, capital = 0.0, 0.0, 0.0, 0.0, 0.0
         can_buy = 0
-        transpose = ""
 
         capital = float(self.capital.text())
 
@@ -57,11 +53,6 @@ class Ui(QtWidgets.QWidget):
         can_buy = math.floor(capital / buy_price)
         buy_individual = sell_price * can_buy
         buy_profit = buy_individual - capital
-        print("You Selected: " + item)
-        for line in dict:
-            if line[1] == item:
-                transpose = line[0]
-                break
         self.buyQuantity.setText(str(can_buy))
         self.buyIndividual.setText(str(buy_individual))
         self.buyFlip.setText(str(buy_profit))
@@ -85,6 +76,7 @@ if __name__ == "__main__":
     for line in lines:
         as_list = line.split(",")
         line_list.append(as_list)
+
     app = QtWidgets.QApplication(sys.argv)
     window = Ui()
     window.show()
