@@ -1,0 +1,47 @@
+## Material,BuyPrice,SellPrice
+Charcoal,1,2
+Iron Ore,2,3
+Starmetal Ore,3,4
+Orichalcum Ore,5,6
+Silver Ore,7,8
+Gold Ore,9,10
+Platinum Ore,11,12
+Iron Ingot,13,14
+Steel Ingot,15,16
+Starmetal Ingot,17,18
+Orichalcum Ingot,19,20
+Silver Ingot,21,22
+Gold Ingot,23,24
+Platinum Ingot,25,26
+Stone,27,28
+Stone Block,29,30
+Stone Brick,31,32
+Lodestone,33,34
+Lodestone Brick,35,36
+Obsidian Voidstone,37,38
+Fibers,39,40
+Silk Threads,41,42
+Wirefiber,43,44
+Linen,45,46
+Sateen,47,48
+Silk,49,50
+Infused Silk,50,51
+Green Wood,52,53
+Aged Wood,54,55
+Timber,56,57
+Lumber,58,59
+Wyrdwood,60,61
+Ironwood,62,63
+Wyrdwood Plank,64,65
+Irwonwood Plank,66,67
+Rawhide,68,69
+Thick Hide,70,71
+Iron Hide,72,73
+Coarse Leather,74,75
+Rugged Leather,76,77
+Layered Leather,78,79
+Infused Leather,80,81
+Sandpaper,82,83
+Tannin,84,85
+Crossweave,86,87
+Flux,88,89
