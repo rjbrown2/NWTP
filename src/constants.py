@@ -1,6 +1,8 @@
 RECIPE_DUMP = "../config/javelindata_crafting.csv"
 INGREDIENTS = "../config/ingredients.txt"
 
+variable_ingrs = ["Wood"]
+
 dict = [
     ["Crossweave", "Cheapest Obs. Crossweave"],
     ["Solvent", "Cheapest Obs. Solvent"],

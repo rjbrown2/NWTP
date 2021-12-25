@@ -1,3 +1,5 @@
+import re
+
 import constants
 
 
@@ -80,13 +82,33 @@ def print_results(recipe):
         recipe = recipe.sub_recipe
     output_string += recipe_lookup_dump_data(recipe.recipe) + ":"  # recipe requires
     for i, j in zip(recipe.ingrs, recipe.qtys):
-        output_string += j + "-" + recipe_lookup_dump_data(i) + ","  # new line for each ingredient
+        if i in constants.variable_ingrs:
+
+            # Search for cheapest Wood
+            with open(constants.INGREDIENTS, "r") as read_file:
+                lines = read_file.readlines()
+                result = [L for L in lines if i.upper() in L.upper()]
+                result += [L for L in lines if "TIMBER" in L.upper()]  # Oddball woods
+                result += [L for L in lines if "LUMBER" in L.upper()]
+
+                price_list = []
+                for x in result:
+                    price_list.append(x.split(",")[1])
+
+                cheapest_price = min(price_list)
+                min_index = price_list.index(cheapest_price)
+                cheapest = result[min_index].split(",")[0]
+                output_string += j + "-" + cheapest + ","  # add cheapest wood to ingredient list
+        else:
+            output_string += j + "-" + recipe_lookup_dump_data(i) + ","  # new line for each ingredient
     return output_string
 
 
-# TODO: Add a way to determine the cheapest of "wood"
 # TODO: Add a way to determine the cheapest of "hide"
 # TODO: Add a way to determine the cheapest of "fiber"
+def determine_cheapest(item):
+    print("wip")
+
 
 def recipe_lookup_dump_data(item):
     dict = constants.dict

@@ -27,13 +27,13 @@ Sateen,47,48
 Silk,49,50
 Infused Silk,50,51
 Green Wood,52,53
-Aged Wood,54,55
+Aged Wood,24,55
 Timber,56,57
 Lumber,58,59
 Wyrdwood,60,61
 Ironwood,62,63
 Wyrdwood Planks,64,65
-Irwonwood Planks,66,67
+Ironwood Planks,66,67
 Rawhide,68,69
 Thick Hide,70,71
 Iron Hide,72,73
