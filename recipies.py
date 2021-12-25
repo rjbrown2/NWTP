@@ -66,8 +66,6 @@ def pull_recipe(recipe_name):
     except FileNotFoundError:
         print("File not found!")
 
-    input("PRESS")
-
 
 def print_results(recipe):
     output_string = ""

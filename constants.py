@@ -1,4 +1,5 @@
 RECIPE_DUMP = "javelindata_crafting.csv"
+INGREDIENTS = "ingredients.txt"
 
 dict = [
     ["OreT1", "Iron Ore"],
