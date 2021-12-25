@@ -1,4 +1,5 @@
 RECIPE_DUMP = "javelindata_crafting.csv"
+INGREDIENTS = "ingredients.txt"
 
 dict = [
     ["Crossweave", "Cheapest Obs. Crossweave"],
