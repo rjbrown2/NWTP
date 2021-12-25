@@ -1,4 +1,4 @@
-import constant
+import constants
 
 
 class Recipe:
@@ -16,7 +16,7 @@ def pull_recipe(recipe_name):
     recipe_found = False
 
     try:
-        file = open(constant.RECIPE_DUMP)
+        file = open(constants.RECIPE_DUMP)
 
         lines = file.readlines()
         for line in lines:
@@ -69,20 +69,33 @@ def pull_recipe(recipe_name):
     input("PRESS")
 
 
-def main():
-    recipe = pull_recipe("IngotT4")
-
-    # This recursion works yo
+def print_results(recipe):
+    output_string = ""
+    result = pull_recipe(recipe)
     while recipe.has_sub_recipe:
-        print(recipe.recipe + " requires:")
+        output_string += recipe.recipe + " requires: \n"
         for i, j in zip(recipe.ingrs, recipe.qtys):
-            print(i + " " + j)
-        print("\n")
+            output_string += (i + " " + j + "\n")
+        output_string += "\n"
         recipe = recipe.sub_recipe
-    print(recipe.recipe + " requires:")
+    output_string += recipe.recipe + "requires: \n"
     for i, j in zip(recipe.ingrs, recipe.qtys):
-        print(i + " " + j)
+        output_string += (i + " " + j + "\n")
+
+# def main():
+#     recipe = pull_recipe("IngotT4")
+
+#     # This recursion works yo
+#     while recipe.has_sub_recipe:
+#         print(recipe.recipe + " requires:")
+#         for i, j in zip(recipe.ingrs, recipe.qtys):
+#             print(i + " " + j)
+#         print("\n")
+#         recipe = recipe.sub_recipe
+#     print(recipe.recipe + " requires:")
+#     for i, j in zip(recipe.ingrs, recipe.qtys):
+#         print(i + " " + j)
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()

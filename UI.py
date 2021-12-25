@@ -14,8 +14,10 @@ class Ui(QtWidgets.QWidget):
         #self.ui = loadUI(os.path.join(root, 'NW_TP3.ui'), baseinstance=self)
         uic.loadUi('NW_TP3.ui', self)
         self.setWindowTitle("New World Trading Post")
-        self.combo = self.findChild(QtWidgets.QComboBox,"buy_comboBox")
-        self.combo.currentTextChanged.connect(self.buy_combo_selected)
+        self.buyCombo = self.findChild(QtWidgets.QComboBox,"buy_comboBox")
+        self.buyCombo.currentTextChanged.connect(self.buy_combo_selected)
+        self.sellCombo = self.findChild(QtWidgets.QComboBox, "sell_comboBox")
+        self.sellCombo.currentTextChanged.connect(self.sell_combo_selected)
         self.buyQuantity = self.findChild(QtWidgets.QLineEdit, "buyQuantity")
         self.buyIndividual = self.findChild(QtWidgets.QLineEdit, "buyIndividual")
         self.buyFlip = self.findChild(QtWidgets.QLineEdit, "buyFlip")
@@ -24,10 +26,10 @@ class Ui(QtWidgets.QWidget):
         self.show()
 
     def sell_combo_selected(self):
-        pass
+        item = self.sellCombo.currentText()
 
     def buy_combo_selected(self):
-        item = self.combo.currentText()
+        item = self.buyCombo.currentText()
 
         #TODO:  Add Error Checking for Capital.  MUST ONLY BE POSITIVE Float
         
