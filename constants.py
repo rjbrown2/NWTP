@@ -1,6 +1,13 @@
 RECIPE_DUMP = "javelindata_crafting.csv"
 
 dict = [
+    ["Crossweave", "Cheapest Obs. Crossweave"],
+    ["Solvent", "Cheapest Obs. Solvent"],
+    ["Tannin", "Cheapest Obs. Tannin"],
+    ["Sandpaper", "Cheapest Obs. Sandpaper"],
+    ["Flux", "Cheapest Obs. Flux"],
+    ["Wood", "Cheapest Wood"],
+    ["Arc_Lodestone", "Cheapest Arcane Lodestone"],
     ["OreT1", "Iron Ore"],
     ["OreT4", "Starmetal Ore"],
     ["OreT5", "Orichalcum Ore"],

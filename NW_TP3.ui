@@ -315,7 +315,7 @@
    </item>
    <item>
     <property name="text">
-     <string>Arcana Lodestone</string>
+     <string>Arcane Lodestone</string>
     </property>
    </item>
   </widget>
@@ -477,36 +477,6 @@
    </item>
    <item>
     <property name="text">
-     <string>Iron Ore</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Starmetal Ore</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Orichalcum Ore</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Silver Ore</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Gold Ore</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Platinum Ore</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
      <string>Iron Ingot</string>
     </property>
    </item>
@@ -542,11 +512,6 @@
    </item>
    <item>
     <property name="text">
-     <string>Stone</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
      <string>Stone Block</string>
     </property>
    </item>
@@ -557,32 +522,12 @@
    </item>
    <item>
     <property name="text">
-     <string>Lodestone</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
      <string>Lodestone Brick</string>
     </property>
    </item>
    <item>
     <property name="text">
      <string>Obsidian Voidstone</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Fibers</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Silk Threads</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Wirefiber</string>
     </property>
    </item>
    <item>
@@ -607,16 +552,6 @@
    </item>
    <item>
     <property name="text">
-     <string>Green Wood</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Aged Wood</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
      <string>Timber</string>
     </property>
    </item>
@@ -627,37 +562,12 @@
    </item>
    <item>
     <property name="text">
-     <string>Wyrdwood</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Ironwood</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
      <string>Wyrdwood Plank</string>
     </property>
    </item>
    <item>
     <property name="text">
      <string>Irwonwood Plank</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Rawhide</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Thick Hide</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Iron Hide</string>
     </property>
    </item>
    <item>
@@ -678,31 +588,6 @@
    <item>
     <property name="text">
      <string>Infused Leather</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Sandpaper</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Tannin</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Crossweave</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Flux</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Arcana Lodestone</string>
     </property>
    </item>
   </widget>

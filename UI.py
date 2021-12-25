@@ -27,6 +27,10 @@ class Ui(QtWidgets.QWidget):
 
     def sell_combo_selected(self):
         item = self.sellCombo.currentText()
+        trans_item = lookup_dump_data(item)
+        print("FOUND: " + trans_item)
+        output = recipies.print_results(str(trans_item))
+        self.debug.setText(str(output))
 
     def buy_combo_selected(self):
         item = self.buyCombo.currentText()
@@ -56,6 +60,15 @@ class Ui(QtWidgets.QWidget):
         self.buyQuantity.setText(str(can_buy))
         self.buyIndividual.setText(str(buy_individual))
         self.buyFlip.setText(str(buy_profit))
+
+def lookup_dump_data(item):
+    dict = constants.dict
+    trans_item = ""
+    for piece in dict:
+        if item == piece[1]:
+            trans_item  = piece[0]
+            break
+    return trans_item
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal.SIG_DFL)

@@ -4,6 +4,7 @@ import constants
 class Recipe:
     def __init__(self, recipe, ingrs, qtys, has_sub_recipe=False, sub_recipe=None):
         self.recipe = recipe
+        self.name = ""
         self.ingrs = ingrs
         self.qtys = qtys
         self.has_sub_recipe = has_sub_recipe
@@ -68,34 +69,54 @@ def pull_recipe(recipe_name):
 
     input("PRESS")
 
-
 def print_results(recipe):
     output_string = ""
-    result = pull_recipe(recipe)
+    recipe = pull_recipe(str(recipe))
+    # This recursion works yo
     while recipe.has_sub_recipe:
-        output_string += recipe.recipe + " requires: \n"
+        output_string +=recipie_lookup_dump_data(recipe.recipe) + " requires:\n"
         for i, j in zip(recipe.ingrs, recipe.qtys):
-            output_string += (i + " " + j + "\n")
+            output_string +=recipie_lookup_dump_data(i) + " " + j + "\n"
         output_string += "\n"
         recipe = recipe.sub_recipe
-    output_string += recipe.recipe + "requires: \n"
+    output_string += recipie_lookup_dump_data(recipe.recipe) + " requires: \n"
     for i, j in zip(recipe.ingrs, recipe.qtys):
-        output_string += (i + " " + j + "\n")
-
-# def main():
-#     recipe = pull_recipe("IngotT4")
-
-#     # This recursion works yo
-#     while recipe.has_sub_recipe:
-#         print(recipe.recipe + " requires:")
-#         for i, j in zip(recipe.ingrs, recipe.qtys):
-#             print(i + " " + j)
-#         print("\n")
-#         recipe = recipe.sub_recipe
-#     print(recipe.recipe + " requires:")
-#     for i, j in zip(recipe.ingrs, recipe.qtys):
-#         print(i + " " + j)
+        output_string += recipie_lookup_dump_data(i) + " " + j +"\n"
+    return output_string
 
 
-# if __name__ == "__main__":
-#     main()
+def main():
+    recipe = pull_recipe("IngotT4")
+
+    # This recursion works yo
+    while recipe.has_sub_recipe:
+        print(recipe.recipe + " requires:")
+        for i, j in zip(recipe.ingrs, recipe.qtys):
+            print(i + " " + j)
+        print("\n")
+        recipe = recipe.sub_recipe
+    print(recipe.recipe + " requires:")
+    for i, j in zip(recipe.ingrs, recipe.qtys):
+        print(i + " " + j)
+
+
+# TODO: Add a way to determine the cheapest of "wood"
+# TODO: Add a way to determine the cheapest of "hide"
+# TODO: Add a way to determine the cheapest of "fiber"
+
+def recipie_lookup_dump_data(item):
+    dict = constants.dict
+    print("RECIPIE LOOKUP DATA: " + item)
+    trans_item = ""
+    for piece in dict:
+        if item == piece[0]:
+            trans_item  = piece[1]
+            break
+        #else: print("NOTHING FOUND")
+    return trans_item
+
+
+
+
+if __name__ == "__main__":
+    main()

@@ -45,3 +45,5 @@ Sandpaper,82,83
 Tannin,84,85
 Crossweave,86,87
 Flux,88,89
+Cheapest Wood,52, 53
+Arcane Lodestone,90,91
