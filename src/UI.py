@@ -97,7 +97,7 @@ class Ui(QtWidgets.QWidget):
                     buy_price = QStandardItem(str(cost))
 
                     parent.appendRow([
-                        ingr, qty, buy_price  # ingr col1: qty col2
+                        ingr, qty, buy_price  # ingr col1: qty col2: buy price col3
                     ])
                 except IndexError:
                     print("Index Error")
