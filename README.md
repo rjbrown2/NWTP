@@ -4,8 +4,6 @@
 
 WIP: New World Trading Post
 
-![](https://github.com/rjbrown2/NWTP/blob/master/resources/StrillesCedias.xpm)
-
 Run: 
 python UI.py
 
