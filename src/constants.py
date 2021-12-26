@@ -4,13 +4,6 @@ INGREDIENTS = "../config/ingredients.txt"
 variable_ingrs = ["Wood"]
 
 dict = [
-    ["Cheapest Obs. Crossweave", "Crossweave"],
-    ["Cheapest Obs. Solvent", "Solvent"],
-    ["Cheapest Obs. Tannin", "Tannin"],
-    ["Cheapest Obs. Sandpaper", "Sandpaper"],
-    ["Cheapest Obs. Flux", "Flux"],
-    ["Cheapest Wood", "Wood"],
-    ["Cheapest Arcane Lodestone", "Arc_Lodestone"],
     ["Crossweave", "Cheapest Obs. Crossweave"],
     ["Solvent", "Cheapest Obs. Solvent"],
     ["Tannin", "Cheapest Obs. Tannin"],
