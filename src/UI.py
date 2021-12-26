@@ -8,14 +8,21 @@ from PyQt5.QtGui import QDoubleValidator, QStandardItemModel, QStandardItem
 import constants
 import recipes
 
+#  Global variables
+#  Setting global variables here caused interesting issues
+#  however setting them global further down (line 88 for total_ingr_cost) works fine
 total_ingr_cost = 0.0
 
 
 class Ui(QtWidgets.QWidget):
-    def __init__(self, parent=None):
+    def __init__(self):
         super(Ui, self).__init__()
         uic.loadUi('../config/NW_TP3.ui', self)
         self.setWindowTitle("New World Trading Post")
+
+        #
+        # Initialize components
+        #
         self.buyCombo = self.findChild(QtWidgets.QComboBox, "buy_comboBox")
         self.buyCombo.currentTextChanged.connect(self.buy_combo_selected)
         self.sellCombo = self.findChild(QtWidgets.QComboBox, "sell_comboBox")
@@ -39,15 +46,21 @@ class Ui(QtWidgets.QWidget):
         self.debug = self.findChild(QtWidgets.QTextEdit, "debug")
         self.debug_tree = self.findChild(QtWidgets.QTreeView, "debugTreeView")
         self.model = QStandardItemModel()
-        self.model.setHorizontalHeaderLabels(["Recipe", "Qty", "Cost"])
+        self.model.setHorizontalHeaderLabels(["Recipe", "Qty", "Cost", "Total Qty", "Total Cost"])
         self.debug_tree.header().setDefaultSectionSize(180)
         self.debug_tree.setModel(self.model)
         self.debug_tree.setColumnWidth(0, 150)
         self.debug_tree.setColumnWidth(1, 50)
         self.debug_tree.setColumnWidth(2, 50)
+        #
+        # End component initialization
+        #
+
         self.show()
 
     def sell_combo_selected(self):
+        can_make,  sell_individual, sell_flip = 0.0, 0.0, 0.0
+
         item = self.sellCombo.currentText()
         trans_item = lookup_dump_data(item)
         print("LOOKUP: " + item)
@@ -57,21 +70,22 @@ class Ui(QtWidgets.QWidget):
         self.process_output(output)  # Fill QTreeView
         self.debug.setText(str(output))  # Fill RichTextBox
         # TODO:  Verify formulas for sell boxes
-        print(total_ingr_cost)
         capital = float(self.capital.text())
 
-        can_make = math.floor(capital / total_ingr_cost)
+        can_make = math.floor(capital / total_ingr_cost)  # Formulate and set sell quantity ( qty can be made )
         self.sellQuantity.setText(str(can_make))
         p = lookup_prices(item)
 
-        sell_ind = can_make * float(p[1])       # Formulate and set sell individual
-        self.sellIndividual.setText(str(sell_ind))
+        sell_individual = can_make * float(p[1])  # Formulate and set sell individual
+        self.sellIndividual.setText(str(sell_individual))
 
-        sell_flip = sell_ind - capital          # Formulate and set sell flip
+        sell_flip = sell_individual - capital  # Formulate and set sell flip
         self.sellFlip.setText(str(sell_flip))
 
     def process_output(self, data_in):
         self.model.setRowCount(0)
+        global total_ingr_cost
+        total_ingr_cost = 0
         recipe_split = data_in.split("\n")
 
         #  Iterate recipes within string
@@ -92,7 +106,6 @@ class Ui(QtWidgets.QWidget):
 
                     p = lookup_prices(t[1])
                     cost = float(p[0]) * float(t[0])
-                    global total_ingr_cost
                     total_ingr_cost += cost
                     buy_price = QStandardItem(str(cost))
 
@@ -107,10 +120,8 @@ class Ui(QtWidgets.QWidget):
 
     def buy_combo_selected(self):
         item = self.buyCombo.currentText()
-        buy_individual, buy_profit, buy_price, sell_price, capital = 0.0, 0.0, 0.0, 0.0, 0.0
-        can_buy = 0
-
         capital = float(self.capital.text())
+        can_buy, buy_individual, buy_flip = 0.0, 0.0, 0.0
 
         p = lookup_prices(item)
         buy_price, sell_price = p[0], p[1]
