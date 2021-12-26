@@ -1,5 +1,10 @@
 # NWTP
+
+[!Build](https://github.com/rjbrown2/NWTP/actions/workflows/python-app.yml/badge.svg)](https://github.com/rjbrown2/NWTP/actions/workflows/python-app.yml)
+
 WIP: New World Trading Post
+
+[https://github.com/rjbrown2/NWTP/blob/master/resources/StrillesCedias.xpm)](https://github.com/rjbrown2/NWTP/blob/master/resources/StrillesCedias.xpm)
 
 Run: 
 python UI.py
