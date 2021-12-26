@@ -1,8 +1,7 @@
-# NWTP
-
 [![Build & Test](https://github.com/rjbrown2/NWTP/actions/workflows/python-app.yml/badge.svg)](https://github.com/rjbrown2/NWTP/actions/workflows/python-app.yml)
+# NWTP - New World Trading Post
 
-WIP: New World Trading Post
+WIP:
 
 ![StrillesCedias](https://user-images.githubusercontent.com/91291114/147407945-6510b2a9-7525-4a43-b099-bbea685b7642.png)
 
