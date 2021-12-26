@@ -32,8 +32,8 @@ Timber,56,57
 Lumber,58,59
 Wyrdwood,60,61
 Ironwood,62,63
-Wyrdwood Planks,64,65
-Ironwood Planks,66,67
+Wyrdwood Plank,64,65
+Ironwood Plank,66,67
 Rawhide,68,69
 Thick Hide,70,71
 Iron Hide,72,73

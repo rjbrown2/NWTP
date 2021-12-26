@@ -89,7 +89,6 @@ def print_results(recipe):
             cheapest = determine_cheapest(i)
             temp_list.append(j)
             temp_list.append(cheapest)
-            print(j)
         else:
             temp_list.append(j)
             temp_list.append(recipe_lookup_dump_data(i))            
@@ -125,20 +124,3 @@ def recipe_lookup_dump_data(item):
             break
         # else: print("NOTHING FOUND")
     return trans_item
-
-# def main():
-#     recipe = pull_recipe("IngotT4")
-
-#     # This recursion works yo
-#     while recipe.has_sub_recipe:
-#         print(recipe.recipe + " requires:")
-#         for i, j in zip(recipe.ingrs, recipe.qtys):
-#             print(i + " " + j)
-#         print("\n")
-#         recipe = recipe.sub_recipe
-#     print(recipe.recipe + " requires:")
-#     for i, j in zip(recipe.ingrs, recipe.qtys):
-#         print(i + " " + j)
-
-# if __name__ == "__main__":
-#     main()
