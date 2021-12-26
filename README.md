@@ -4,6 +4,8 @@
 
 WIP: New World Trading Post
 
+![StrillesCedias](https://user-images.githubusercontent.com/91291114/147407945-6510b2a9-7525-4a43-b099-bbea685b7642.png)
+
 Run: 
 python UI.py
 
