@@ -19,7 +19,6 @@ class Ui(QtWidgets.QWidget):
         super(Ui, self).__init__()
         uic.loadUi('../config/NW_TP3.ui', self)
         self.setWindowTitle("New World Trading Post")
-
         #
         # Initialize components
         #
@@ -47,11 +46,13 @@ class Ui(QtWidgets.QWidget):
         self.debug_tree = self.findChild(QtWidgets.QTreeView, "debugTreeView")
         self.model = QStandardItemModel()
         self.model.setHorizontalHeaderLabels(["Recipe", "Qty", "Cost", "Total Qty", "Total Cost"])
-        self.debug_tree.header().setDefaultSectionSize(180)
+        self.debug_tree.header().setDefaultSectionSize(410)
         self.debug_tree.setModel(self.model)
-        self.debug_tree.setColumnWidth(0, 150)
+        self.debug_tree.setColumnWidth(0, 200)
         self.debug_tree.setColumnWidth(1, 50)
         self.debug_tree.setColumnWidth(2, 50)
+        self.debug_tree.setColumnWidth(3, 60)
+        self.debug_tree.setColumnWidth(4, 50)
         #
         # End component initialization
         #
@@ -63,12 +64,10 @@ class Ui(QtWidgets.QWidget):
 
         item = self.sellCombo.currentText()
         trans_item = lookup_dump_data(item)
-        print("LOOKUP: " + item)
-        print("FOUND: " + trans_item)
-        output = recipes.print_results(str(trans_item))
+        output_list = recipes.print_results(str(trans_item))
 
-        self.process_output(output)  # Fill QTreeView
-        self.debug.setText(str(output))  # Fill RichTextBox
+        self.process_output(output_list)  # Fill QTreeView
+        #self.debug.setText(str(output))  # Fill RichTextBox
         # TODO:  Verify formulas for sell boxes
         capital = float(self.capital.text())
 
@@ -82,41 +81,45 @@ class Ui(QtWidgets.QWidget):
         sell_flip = sell_individual - capital  # Formulate and set sell flip
         self.sellFlip.setText(str(sell_flip))
 
-    def process_output(self, data_in):
+    # I've removed all of the string processing...cause I'm OCD and don't like it.
+    def process_output(self, list_in):
         self.model.setRowCount(0)
         global total_ingr_cost
         total_ingr_cost = 0
-        recipe_split = data_in.split("\n")
 
-        #  Iterate recipes within string
-        for r in recipe_split:
-            parent = QStandardItem(r.split(":")[0])  # Split recipe name from ingredients
-            parent.setEditable(False)
-            ingrs = r.split(":")[1]  # Split ingredients from recipe name
+        x,z = 0,0
+        y = len(list_in)
 
-            # Iterate ingredients in recipe and split ingr from qty
-            for i in ingrs.split(","):
-                t = i.split("-")
-                # For loop causes index out of range when using t[1] outside of try except, unsure why
-                try:
-                    ingr = QStandardItem(t[1])
-                    qty = QStandardItem(t[0])
+        while x < y:                                                                        # While Index < Length of List
+            if not isinstance(list_in[x], list):
+                parent = QStandardItem(list_in[x])
+                parent.setEditable(False)
+                x += 1
+                self.model.appendRow(parent)
+            else:
+                temp_list = list_in[x]                                                      # While Index < Lenght of List within List
+                y = len(temp_list)
+                while z < y:
+                    qty = QStandardItem(temp_list[z])
+                    qty.setEditable(False)                                                  # No Touchy Touchy
+                    ingr = QStandardItem(temp_list[z+1])
                     ingr.setEditable(False)
-                    qty.setEditable(False)
-
-                    p = lookup_prices(t[1])
-                    cost = float(p[0]) * float(t[0])
-                    total_ingr_cost += cost
+                    price = lookup_prices(recipes.recipe_lookup_dump_data(temp_list[z+1]))  # Convert anything that isn't in our Ingredients List
+                    cost = float(price[0]) * int(temp_list[z])
                     buy_price = QStandardItem(str(cost))
-
-                    parent.appendRow([
-                        ingr, qty, buy_price  # ingr col1: qty col2: buy price col3
-                    ])
-                except IndexError:
-                    print("Index Error")
-
-            self.model.appendRow(parent)
-            self.debug_tree.expandAll()
+                    total_ingr_cost += cost
+                    zero_value = QStandardItem(str(0))
+                    zero_value.setEditable(False)
+                    zero_value2 = QStandardItem(str(0))
+                    zero_value2.setEditable(False)
+                    parent.appendRow([ingr, qty, buy_price, zero_value, zero_value2])
+                    temp_list = temp_list[2:]                                               # Splist list to only include index 2 -> End
+                    y = len(temp_list)
+                x += 1                                                                      # Increment Index
+                y = len(list_in)                                                            # Fix Length of list
+            
+           
+        self.debug_tree.expandAll()
 
     def buy_combo_selected(self):
         item = self.buyCombo.currentText()
@@ -136,7 +139,7 @@ class Ui(QtWidgets.QWidget):
 
 def lookup_dump_data(item):
     dict = constants.dict
-    trans_item = ""
+    trans_item = item
     for piece in dict:
         if item == piece[1]:
             trans_item = piece[0]

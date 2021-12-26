@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
-    <height>328</height>
+    <width>750</width>
+    <height>461</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>500</width>
-    <height>325</height>
+    <height>400</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -23,481 +23,490 @@
    <iconset>
     <normaloff>../resources/NW-coins-96x.ico</normaloff>../resources/NW-coins-96x.ico</iconset>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="3" column="1">
+    <widget class="QLabel" name="sell_label">
+     <property name="text">
+      <string>Selling</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QComboBox" name="buy_comboBox">
+     <item>
+      <property name="text">
+       <string/>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Charcoal</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Iron Ore</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Starmetal Ore</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Orichalcum Ore</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Silver Ore</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Gold Ore</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Platinum Ore</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Iron Ingot</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Steel Ingot</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Starmetal Ingot</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Orichalcum Ingot</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Silver Ingot</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Gold Ingot</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Platinum Ingot</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Stone</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Stone Block</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Stone Brick</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Lodestone</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Lodestone Brick</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Obsidian Voidstone</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Fibers</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Silk Threads</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Wirefiber</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Linen</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Sateen</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Silk</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Infused Silk</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Green Wood</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Aged Wood</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Timber</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Lumber</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Wyrdwood</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Ironwood</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Wyrdwood Plank</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Ironwood Plank</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Rawhide</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Thick Hide</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Iron Hide</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Coarse Leather</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Rugged Leather</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Layered Leather</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Infused Leather</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Sandpaper</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Tannin</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Crossweave</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Flux</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Arcane Lodestone</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QLabel" name="buy_quantity_label">
+     <property name="text">
+      <string>Quantity</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="4">
+    <widget class="QTreeView" name="debugTreeView"/>
+   </item>
+   <item row="1" column="4" colspan="2">
+    <widget class="QLineEdit" name="buyFlip"/>
+   </item>
+   <item row="3" column="0">
+    <widget class="QComboBox" name="sell_comboBox">
+     <item>
+      <property name="text">
+       <string/>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Charcoal</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Iron Ingot</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Steel Ingot</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Starmetal Ingot</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Orichalcum Ingot</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Silver Ingot</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Gold Ingot</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Platinum Ingot</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Stone Block</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Stone Brick</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Lodestone Brick</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Obsidian Voidstone</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Linen</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Sateen</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Silk</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Infused Silk</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Timber</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Lumber</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Wyrdwood Plank</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Ironwood Plank</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Coarse Leather</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Rugged Leather</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Layered Leather</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Infused Leather</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QLabel" name="sell_quantity_label">
+     <property name="text">
+      <string>Quantity</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <widget class="QLineEdit" name="sellQuantity"/>
+   </item>
+   <item row="2" column="3">
+    <widget class="QLabel" name="sell_individual_label">
+     <property name="text">
+      <string>Individual</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLabel" name="capital_label">
+     <property name="text">
+      <string>Capital</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QLineEdit" name="buyQuantity">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="4" colspan="2">
+    <widget class="QLabel" name="sell_flip_label">
+     <property name="text">
+      <string>Flip Profit</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <widget class="QLineEdit" name="buyIndividual"/>
+   </item>
+   <item row="0" column="4" colspan="2">
+    <widget class="QLabel" name="buy_flip_label">
+     <property name="text">
+      <string>Flip Profit</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="4" colspan="2">
+    <widget class="QLineEdit" name="sellFlip"/>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLabel" name="buy_label">
+     <property name="text">
+      <string>Buying</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3">
+    <widget class="QLabel" name="buy_individual_label">
+     <property name="text">
+      <string>Individual</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="3">
+    <widget class="QLineEdit" name="sellIndividual"/>
+   </item>
    <item row="0" column="0">
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="1" column="1">
-      <widget class="QComboBox" name="buy_comboBox">
-       <item>
-        <property name="text">
-         <string/>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Charcoal</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Iron Ore</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Starmetal Ore</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Orichalcum Ore</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Silver Ore</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Gold Ore</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Platinum Ore</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Iron Ingot</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Steel Ingot</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Starmetal Ingot</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Orichalcum Ingot</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Silver Ingot</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Gold Ingot</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Platinum Ingot</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Stone</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Stone Block</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Stone Brick</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Lodestone</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Lodestone Brick</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Obsidian Voidstone</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Fibers</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Silk Threads</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Wirefiber</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Linen</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Sateen</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Silk</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Infused Silk</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Green Wood</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Aged Wood</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Timber</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Lumber</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Wyrdwood</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Ironwood</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Wyrdwood Plank</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Ironwood Plank</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Rawhide</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Thick Hide</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Iron Hide</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Coarse Leather</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Rugged Leather</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Layered Leather</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Infused Leather</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Sandpaper</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Tannin</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Crossweave</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Flux</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Arcane Lodestone</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="1" column="3">
-      <widget class="QLineEdit" name="buyQuantity">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="QLabel" name="buy_label">
-       <property name="text">
-        <string>Buying</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QComboBox" name="sell_comboBox">
-       <item>
-        <property name="text">
-         <string/>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Charcoal</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Iron Ingot</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Steel Ingot</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Starmetal Ingot</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Orichalcum Ingot</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Silver Ingot</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Gold Ingot</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Platinum Ingot</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Stone Block</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Stone Brick</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Lodestone Brick</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Obsidian Voidstone</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Linen</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Sateen</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Silk</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Infused Silk</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Timber</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Lumber</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Wyrdwood Plank</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Ironwood Plank</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Coarse Leather</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Rugged Leather</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Layered Leather</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Infused Leather</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="3" column="2">
-      <widget class="QLabel" name="sell_label">
-       <property name="text">
-        <string>Selling</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="4">
-      <widget class="QLabel" name="buy_individual_label">
-       <property name="text">
-        <string>Individual</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="3">
-      <widget class="QLineEdit" name="sellQuantity"/>
-     </item>
-     <item row="2" column="3">
-      <widget class="QLabel" name="sell_quantity_label">
-       <property name="text">
-        <string>Quantity</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="3">
-      <widget class="QLabel" name="buy_quantity_label">
-       <property name="text">
-        <string>Quantity</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="4">
-      <widget class="QLineEdit" name="buyIndividual"/>
-     </item>
-     <item row="2" column="5">
-      <widget class="QLabel" name="sell_flip_label">
-       <property name="text">
-        <string>Flip Profit</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="4">
-      <widget class="QLabel" name="sell_individual_label">
-       <property name="text">
-        <string>Individual</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="5">
-      <widget class="QLineEdit" name="buyFlip"/>
-     </item>
-     <item row="3" column="5">
-      <widget class="QLineEdit" name="sellFlip"/>
-     </item>
-     <item row="0" column="5">
-      <widget class="QLabel" name="buy_flip_label">
-       <property name="text">
-        <string>Flip Profit</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="4">
-      <widget class="QLineEdit" name="sellIndividual"/>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="Capital">
-       <property name="text">
-        <string>10000</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QLabel" name="capital_label">
-       <property name="text">
-        <string>Capital</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="3" colspan="3">
-      <widget class="QTreeView" name="debugTreeView"/>
-     </item>
-     <item row="4" column="1" colspan="2">
-      <widget class="QTextEdit" name="debug"/>
-     </item>
-    </layout>
+    <widget class="QLineEdit" name="Capital">
+     <property name="text">
+      <string>10000</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="4" colspan="2">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap>../resources/StrillesCedias.xpm</pixmap>
+     </property>
+     <property name="scaledContents">
+      <bool>false</bool>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

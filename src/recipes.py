@@ -73,21 +73,28 @@ def pull_recipe(recipe_name):
 def print_results(recipe):
     output_string = ""
     recipe = pull_recipe(str(recipe))
-    # This recursion works yo
+    output_list = []
     while recipe.has_sub_recipe:
-        output_string += recipe_lookup_dump_data(recipe.recipe) + ":"  # recipe requires
+        temp_list = []
+        output_list.append(recipe_lookup_dump_data(recipe.recipe))
         for i, j in zip(recipe.ingrs, recipe.qtys):
-            output_string += j + "-" + recipe_lookup_dump_data(i) + ","  # new line for each ingredient
-        output_string += "\n"
+            temp_list.append(j)
+            temp_list.append(recipe_lookup_dump_data(i))
         recipe = recipe.sub_recipe
-    output_string += recipe_lookup_dump_data(recipe.recipe) + ":"  # recipe requires
+        output_list.append(temp_list)
+    temp_list =[]
+    output_list.append(recipe_lookup_dump_data(recipe.recipe))
     for i, j in zip(recipe.ingrs, recipe.qtys):
         if i in constants.variable_ingrs:
             cheapest = determine_cheapest(i)
-            output_string += j + "-" + cheapest + ","  # add cheapest wood to ingredient list
+            temp_list.append(j)
+            temp_list.append(cheapest)
+            print(j)
         else:
-            output_string += j + "-" + recipe_lookup_dump_data(i) + ","  # new line for each ingredient
-    return output_string
+            temp_list.append(j)
+            temp_list.append(recipe_lookup_dump_data(i))            
+    output_list.append(temp_list)
+    return output_list
 
 
 # TODO: Add a way to determine the cheapest of "hide"
@@ -111,8 +118,7 @@ def determine_cheapest(item):
 
 def recipe_lookup_dump_data(item):
     dict = constants.dict
-    print("recipe LOOKUP DATA: " + item)
-    trans_item = ""
+    trans_item = item
     for piece in dict:
         if item == piece[0]:
             trans_item = piece[1]
