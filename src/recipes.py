@@ -1,23 +1,37 @@
-import re
-
 import constants
 
 
 class Recipe:
-    def __init__(self, recipe, ingrs, qtys, has_sub_recipe=False, sub_recipe=None):
+    def __init__(self, recipe, common_name, ingrs, qtys, has_sub_recipe=False, sub_recipe=None):
         self.recipe = recipe
-        self.name = ""
+        self.common_name = common_name
         self.ingrs = ingrs
         self.qtys = qtys
         self.has_sub_recipe = has_sub_recipe
         self.sub_recipe = sub_recipe
 
+    def getRecipe(self):
+        return self.recipe
+
+    def getRecipeName(self):
+        return self.common_name
+
+    def getIngredients(self):
+        return self.ingrs
+
+    def getIngredientQuantities(self):
+        return self.qtys
+
+    def hasSubRecipe(self):
+        return self.has_sub_recipe
+
+    def getSubRecipe(self):
+        return self.sub_recipe
+
 
 def pull_recipe(recipe_name):
     ingrlist = []
     qtylist = []
-    recipe_found = False
-
     try:
         file = open(constants.RECIPE_DUMP)
 
@@ -55,45 +69,27 @@ def pull_recipe(recipe_name):
                         # Found a sub recipe
                         has_sub_recipe = True
                         sub_recipe = sub_rec
-                        return Recipe(recipe_name, ingrlist, qtylist, has_sub_recipe, sub_recipe)
+                        cname = name_to_common(recipe_name)
+                        _t_list = []
+                        for _i in ingrlist:
+                            _t_list.append(name_to_common(_i))
+                        ingrlist = _t_list
+                        return Recipe(recipe_name, cname, ingrlist, qtylist, has_sub_recipe, sub_recipe)
 
-                return Recipe(recipe_name, ingrlist, qtylist)
-
-            if recipe_found:
-                break
-
-        if not recipe_found:
-            return None
+                _t_list = []
+                for _i in ingrlist:
+                    if _i in constants.variable_ingrs:
+                        cheapest = determine_cheapest(_i)
+                        _t_list.append(cheapest)
+                    else:
+                        _t_list.append(name_to_common(_i))
+                ingrlist = _t_list
+                cname = name_to_common(recipe_name)
+                return Recipe(recipe_name, cname, ingrlist, qtylist)
 
         file.close()
     except FileNotFoundError:
         print("File not found!")
-
-
-def print_results(recipe):
-    output_string = ""
-    recipe = pull_recipe(str(recipe))
-    output_list = []
-    while recipe.has_sub_recipe:
-        temp_list = []
-        output_list.append(recipe_lookup_dump_data(recipe.recipe))
-        for i, j in zip(recipe.ingrs, recipe.qtys):
-            temp_list.append(j)
-            temp_list.append(recipe_lookup_dump_data(i))
-        recipe = recipe.sub_recipe
-        output_list.append(temp_list)
-    temp_list =[]
-    output_list.append(recipe_lookup_dump_data(recipe.recipe))
-    for i, j in zip(recipe.ingrs, recipe.qtys):
-        if i in constants.variable_ingrs:
-            cheapest = determine_cheapest(i)
-            temp_list.append(j)
-            temp_list.append(cheapest)
-        else:
-            temp_list.append(j)
-            temp_list.append(recipe_lookup_dump_data(i))            
-    output_list.append(temp_list)
-    return output_list
 
 
 # TODO: Add a way to determine the cheapest of "hide"
@@ -115,7 +111,7 @@ def determine_cheapest(item):
         return cheapest
 
 
-def recipe_lookup_dump_data(item):
+def name_to_common(item):
     dict = constants.dict
     trans_item = item
     for piece in dict:

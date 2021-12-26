@@ -60,14 +60,15 @@ class Ui(QtWidgets.QWidget):
         self.show()
 
     def sell_combo_selected(self):
-        can_make,  sell_individual, sell_flip = 0.0, 0.0, 0.0
+        can_make, sell_individual, sell_flip = 0.0, 0.0, 0.0
 
         item = self.sellCombo.currentText()
         trans_item = lookup_dump_data(item)
-        output_list = recipes.print_results(str(trans_item))
 
-        self.process_output(output_list)  # Fill QTreeView
-        #self.debug.setText(str(output))  # Fill RichTextBox
+        testing = recipes.pull_recipe(trans_item)
+
+        self.populate_treeview(testing)  # Fill QTreeView
+        # self.debug.setText(str(output))  # Fill RichTextBox
         # TODO:  Verify formulas for sell boxes
         capital = float(self.capital.text())
 
@@ -82,43 +83,35 @@ class Ui(QtWidgets.QWidget):
         self.sellFlip.setText(str(sell_flip))
 
     # I've removed all of the string processing...cause I'm OCD and don't like it.
-    def process_output(self, list_in):
+    def populate_treeview(self, data_in):
         self.model.setRowCount(0)
         global total_ingr_cost
         total_ingr_cost = 0
+        recipe = data_in
 
-        x,z = 0,0
-        y = len(list_in)
+        loop_trigger = recipe.hasSubRecipe()
 
-        while x < y:                                                                        # While Index < Length of List
-            if not isinstance(list_in[x], list):
-                parent = QStandardItem(list_in[x])
-                parent.setEditable(False)
-                x += 1
-                self.model.appendRow(parent)
-            else:
-                temp_list = list_in[x]                                                      # While Index < Lenght of List within List
-                y = len(temp_list)
-                while z < y:
-                    qty = QStandardItem(temp_list[z])
-                    qty.setEditable(False)                                                  # No Touchy Touchy
-                    ingr = QStandardItem(temp_list[z+1])
-                    ingr.setEditable(False)
-                    price = lookup_prices(recipes.recipe_lookup_dump_data(temp_list[z+1]))  # Convert anything that isn't in our Ingredients List
-                    cost = float(price[0]) * int(temp_list[z])
-                    buy_price = QStandardItem(str(cost))
-                    total_ingr_cost += cost
-                    zero_value = QStandardItem(str(0))
-                    zero_value.setEditable(False)
-                    zero_value2 = QStandardItem(str(0))
-                    zero_value2.setEditable(False)
-                    parent.appendRow([ingr, qty, buy_price, zero_value, zero_value2])
-                    temp_list = temp_list[2:]                                               # Splist list to only include index 2 -> End
-                    y = len(temp_list)
-                x += 1                                                                      # Increment Index
-                y = len(list_in)                                                            # Fix Length of list
-            
-           
+        while loop_trigger:
+            loop_trigger = recipe.has_sub_recipe
+            parent = QStandardItem(recipe.getRecipeName())
+            parent.setEditable(False)
+
+            self.model.appendRow(parent)
+            ingr_list = recipe.getIngredients()
+            qty_list = recipe.getIngredientQuantities()
+            iq_list = [item for sublist in zip(ingr_list, qty_list) for item in sublist]
+            print(iq_list)
+            for _i, _j in zip(iq_list[::2], iq_list[1::2]):
+                price = lookup_prices(_i)
+                qty = QStandardItem(_j)
+                ingr = QStandardItem(_i)
+                cost = float(price[0]) * int(_j)
+                total_ingr_cost += cost
+                buy_price = QStandardItem(str(cost))
+                parent.appendRow([ingr, qty, buy_price])
+
+            recipe = recipe.sub_recipe
+
         self.debug_tree.expandAll()
 
     def buy_combo_selected(self):
@@ -154,6 +147,13 @@ def lookup_prices(item):
             price_list.append(float(elem[1]))
             price_list.append(float(elem[2]))
             break
+        else:
+            _t = lookup_dump_data(item)
+            if _t == elem[0]:
+                price_list.append(float(elem[1]))
+                price_list.append(float(elem[2]))
+                break
+
     return price_list
 
 

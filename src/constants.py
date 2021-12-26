@@ -5,12 +5,12 @@ variable_ingrs = ["Wood"]
 
 dict = [
     ["Cheapest Arcane Lodestone", "Arcane Lodestone"],
-    ["Cheapest Obs. Crossweave","Crossweave"],
-    ["Cheapest Obs. Solvent","Solvent"],
-    ["Cheapest Obs. Tannin","Tannin"],
+    ["Cheapest Obs. Crossweave", "Crossweave"],
+    ["Cheapest Obs. Solvent", "Solvent"],
+    ["Cheapest Obs. Tannin", "Tannin"],
     ["Cheapest Obs. Sandpaper", "Sandpaper"],
-    ["Cheapest Obs. Flux","Flux"],
-    ["Cheapest Wood","Wood"],
+    ["Cheapest Obs. Flux", "Flux"],
+    ["Cheapest Wood", "Wood"],
     ["Crossweave", "Cheapest Obs. Crossweave"],
     ["Solvent", "Cheapest Obs. Solvent"],
     ["Tannin", "Cheapest Obs. Tannin"],
@@ -2090,4 +2090,3 @@ dict = [
     ["RingINTFOCT4", "Platinum Magician Ring"],
     ["RingINTFOCT5", "Orichalcum Magician Ring"]
 ]
-  
