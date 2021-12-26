@@ -67,7 +67,7 @@ def pull_recipe(recipe_name):
 
         file.close()
     except FileNotFoundError:
-        print("File not found!")
+        print("Recipe File not found!")
 
 
 def print_results(recipe):
@@ -112,7 +112,7 @@ def determine_cheapest(item):
 def recipe_lookup_dump_data(item):
     dict = constants.dict
     print("recipe LOOKUP DATA: " + item)
-    trans_item = ""
+    trans_item = None
     for piece in dict:
         if item == piece[0]:
             trans_item = piece[1]
