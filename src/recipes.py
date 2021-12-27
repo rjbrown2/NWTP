@@ -1,12 +1,12 @@
 import constants
+import market_data
 
 
 class Recipe:
-    def __init__(self, recipe, common_name, ingrs, qtys, has_sub_recipe=False, sub_recipe=None):
+    def __init__(self, recipe, common_name, ingrs, has_sub_recipe=False, sub_recipe=None):
         self.recipe = recipe
         self.common_name = common_name
         self.ingrs = ingrs
-        self.qtys = qtys
         self.has_sub_recipe = has_sub_recipe
         self.sub_recipe = sub_recipe
 
@@ -19,14 +19,35 @@ class Recipe:
     def getIngredients(self):
         return self.ingrs
 
-    def getIngredientQuantities(self):
-        return self.qtys
-
     def hasSubRecipe(self):
         return self.has_sub_recipe
 
     def getSubRecipe(self):
         return self.sub_recipe
+
+
+class Ingredient:
+    def __init__(self, ingredient, common_name, qty, buy_price, sell_price):
+        self.ingredient = ingredient
+        self.common_name = common_name
+        self.qty = qty
+        self.buy_price = buy_price
+        self.sell_price = sell_price
+
+    def getIngredient(self):
+        return self.ingredient
+
+    def getIngredientName(self):
+        return self.common_name
+
+    def getQuantity(self):
+        return self.qty
+
+    def getBuyPrice(self):
+        return self.buy_price
+
+    def getSellPrice(self):
+        return self.sell_price
 
 
 def pull_recipe(recipe_name):
@@ -71,21 +92,30 @@ def pull_recipe(recipe_name):
                         sub_recipe = sub_rec
                         cname = name_to_common(recipe_name)
                         _t_list = []
-                        for _i in ingrlist:
-                            _t_list.append(name_to_common(_i))
+                        for _i, _j in zip(ingrlist, qtylist):
+                            icname = name_to_common(_i)
+                            prices = market_data.lookup_prices(icname)
+                            _t = Ingredient(_i, icname, _j, prices[0], prices[1])  # Create recipe object
+                            _t_list.append(_t)
                         ingrlist = _t_list
-                        return Recipe(recipe_name, cname, ingrlist, qtylist, has_sub_recipe, sub_recipe)
+                        return Recipe(recipe_name, cname, ingrlist, has_sub_recipe, sub_recipe)
 
                 _t_list = []
-                for _i in ingrlist:
+                for _i, _j in zip(ingrlist, qtylist):
                     if _i in constants.variable_ingrs:
                         cheapest = determine_cheapest(_i)
-                        _t_list.append(cheapest)
+                        prices = market_data.lookup_prices(cheapest)
+                        _t = Ingredient(_i, cheapest, _j, prices[0], prices[1])
+                        _t_list.append(_t)
                     else:
-                        _t_list.append(name_to_common(_i))
+                        icname = name_to_common(_i)
+                        prices = market_data.lookup_prices(icname)
+                        _t = Ingredient(_i, icname, _j, prices[0], prices[1])
+                        _t_list.append(_t)
+
                 ingrlist = _t_list
                 cname = name_to_common(recipe_name)
-                return Recipe(recipe_name, cname, ingrlist, qtylist)
+                return Recipe(recipe_name, cname, ingrlist)
 
         file.close()
     except FileNotFoundError:
