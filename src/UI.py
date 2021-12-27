@@ -11,7 +11,7 @@ import recipes
 #  Global variables
 #  Setting global variables here caused interesting issues
 #  however setting them global further down (line 88 for total_ingr_cost) works fine
-from src import market_data
+import market_data
 
 total_ingr_cost = 0.0
 
@@ -80,7 +80,8 @@ class Ui(QtWidgets.QWidget):
         self.sellIndividual.setText(str(sell_individual))
 
         sell_flip = sell_individual - capital  # Formulate and set sell flip
-        self.sellFlip.setText(str(sell_flip))
+        f_sell_flip = "{:.2f}".format(sell_flip)
+        self.sellFlip.setText(f_sell_flip)
 
     # I've removed all of the string processing...cause I'm OCD and don't like it.
     def populate_treeview(self, data_in):
@@ -103,12 +104,17 @@ class Ui(QtWidgets.QWidget):
             for _i, _j in zip(iq_list[::2], iq_list[1::2]):
                 price = market_data.lookup_prices(_i)
                 qty = QStandardItem(_j)
+                qty.setEditable(False)
                 ingr = QStandardItem(_i)
+                ingr.setEditable(False)
                 cost = float(price[0]) * int(_j)
                 total_ingr_cost += cost
                 buy_price = QStandardItem(str(cost))
+                buy_price.setEditable(False)
                 total_qty = QStandardItem(str(0))
+                total_qty.setEditable(False)
                 total_cost = QStandardItem(str(0))
+                total_cost.setEditable(False)
                 parent.appendRow([ingr, qty, buy_price, total_qty, total_cost])
 
             recipe = recipe.sub_recipe
@@ -131,13 +137,21 @@ class Ui(QtWidgets.QWidget):
         self.buyFlip.setText(str(buy_profit))
 
 
-def lookup_dump_data(item):
+def lookup_dump_data(item, reverse_lookup = False):
     dict = constants.dict
     trans_item = item
-    for piece in dict:
-        if item == piece[1]:
-            trans_item = piece[0]
-            break
+    if reverse_lookup:
+        i = 0
+        while i < 10:
+            if item == dict[i][0]:
+                trans_item = dict[i][1]
+                break
+            i += 1
+    else:
+        for piece in dict:
+            if item == piece[1]:
+                trans_item = piece[0]
+                break
     return trans_item
 
 

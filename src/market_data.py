@@ -1,7 +1,7 @@
 import constants
 import requests
 
-from src import UI
+import UI
 
 req_url = "https://docs.google.com/spreadsheets/d/{}/export?format=csv&id={}".format(constants.MARKET_DATA,
                                                                                      constants.MARKET_DATA)
@@ -17,9 +17,11 @@ def lookup_prices(item):
     price_list = []
     with open(constants.MARKET_DATA_LOCAL, "r", -1, "UTF8") as read_file:
         lines = read_file.readlines()
+        trans_item = UI.lookup_dump_data(item, True)
     for line in lines:
-        as_list = line.split(",")
-        print(as_list)
+        as_list = line.split(",")       
+        if trans_item != item:
+            item = trans_item
         if item == as_list[0]:
             price_list.append(float(as_list[1]))
             price_list.append(float(as_list[2]))
@@ -31,6 +33,7 @@ def lookup_prices(item):
             price_list.append(float(as_list[1]))
             price_list.append(float(as_list[2]))
         else:
-            raise ValueError("************************************NO VALUE FOUND FOR " + str(item))
+            error_string = "NO VALUE FOUND FOR " + str(item)
+            raise ValueError(error_string)
     else:
         return price_list
