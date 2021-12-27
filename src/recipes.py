@@ -95,7 +95,7 @@ def pull_recipe(recipe_name):
 # TODO: Add a way to determine the cheapest of "hide"
 # TODO: Add a way to determine the cheapest of "fiber"
 def determine_cheapest(item):
-    with open(constants.INGREDIENTS, "r") as read_file:
+    with open(constants.MARKET_DATA_LOCAL, "r") as read_file:
         lines = read_file.readlines()
         result = [L for L in lines if item.upper() in L.upper()]
         result += [L for L in lines if "TIMBER" in L.upper()]  # Oddball woods

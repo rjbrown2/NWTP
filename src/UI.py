@@ -11,6 +11,8 @@ import recipes
 #  Global variables
 #  Setting global variables here caused interesting issues
 #  however setting them global further down (line 88 for total_ingr_cost) works fine
+from src import market_data
+
 total_ingr_cost = 0.0
 
 
@@ -65,16 +67,14 @@ class Ui(QtWidgets.QWidget):
         item = self.sellCombo.currentText()
         trans_item = lookup_dump_data(item)
 
-        testing = recipes.pull_recipe(trans_item)
-
-        self.populate_treeview(testing)  # Fill QTreeView
+        self.populate_treeview(recipes.pull_recipe(trans_item))  # Fill QTreeView
         # self.debug.setText(str(output))  # Fill RichTextBox
         # TODO:  Verify formulas for sell boxes
         capital = float(self.capital.text())
 
         can_make = math.floor(capital / total_ingr_cost)  # Formulate and set sell quantity ( qty can be made )
         self.sellQuantity.setText(str(can_make))
-        p = lookup_prices(item)
+        p = market_data.lookup_prices(item)
 
         sell_individual = can_make * float(p[1])  # Formulate and set sell individual
         self.sellIndividual.setText(str(sell_individual))
@@ -100,15 +100,16 @@ class Ui(QtWidgets.QWidget):
             ingr_list = recipe.getIngredients()
             qty_list = recipe.getIngredientQuantities()
             iq_list = [item for sublist in zip(ingr_list, qty_list) for item in sublist]
-            print(iq_list)
             for _i, _j in zip(iq_list[::2], iq_list[1::2]):
-                price = lookup_prices(_i)
+                price = market_data.lookup_prices(_i)
                 qty = QStandardItem(_j)
                 ingr = QStandardItem(_i)
                 cost = float(price[0]) * int(_j)
                 total_ingr_cost += cost
                 buy_price = QStandardItem(str(cost))
-                parent.appendRow([ingr, qty, buy_price])
+                total_qty = QStandardItem(str(0))
+                total_cost = QStandardItem(str(0))
+                parent.appendRow([ingr, qty, buy_price, total_qty, total_cost])
 
             recipe = recipe.sub_recipe
 
@@ -119,7 +120,7 @@ class Ui(QtWidgets.QWidget):
         capital = float(self.capital.text())
         can_buy, buy_individual, buy_flip = 0.0, 0.0, 0.0
 
-        p = lookup_prices(item)
+        p = market_data.lookup_prices(item)
         buy_price, sell_price = p[0], p[1]
 
         can_buy = math.floor(capital / buy_price)
@@ -140,33 +141,10 @@ def lookup_dump_data(item):
     return trans_item
 
 
-def lookup_prices(item):
-    price_list = []
-    for elem in line_list:
-        if item == elem[0]:
-            price_list.append(float(elem[1]))
-            price_list.append(float(elem[2]))
-            break
-        else:
-            _t = lookup_dump_data(item)
-            if _t == elem[0]:
-                price_list.append(float(elem[1]))
-                price_list.append(float(elem[2]))
-                break
-
-    return price_list
-
-
 if __name__ == "__main__":
+    market_data.fetch_market_data()  # Fetch Market Data from google sheets
     signal.signal(signal.SIGINT, signal.SIG_DFL)
-    line_list = []
     dict = constants.dict
-
-    with open(constants.INGREDIENTS, "r") as read_file:
-        lines = read_file.readlines()
-    for line in lines:
-        as_list = line.split(",")
-        line_list.append(as_list)
 
     app = QtWidgets.QApplication(sys.argv)
     window = Ui()
