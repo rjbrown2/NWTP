@@ -4,17 +4,15 @@ import sys
 
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtGui import QDoubleValidator, QStandardItemModel, QStandardItem
-
+from PyQt5.QtCore import QObject, pyqtSignal
 import constants
 import recipes
+import time
 
 #  Global variables
 #  Setting global variables here caused interesting issues
 #  however setting them global further down (line 88 for total_ingr_cost) works fine
 import market_data
-
-total_ingr_cost = 0.0
-
 
 class Ui(QtWidgets.QWidget):
     def __init__(self):
@@ -42,6 +40,9 @@ class Ui(QtWidgets.QWidget):
         self.sellFlip.setReadOnly(True)
         self.capital = self.findChild(QtWidgets.QLineEdit, "Capital")
         self.onlyDouble = QDoubleValidator(0.0, 500000.00, 2)
+        self.parent_indexes = []
+        self.can_make = 0
+        self.total_ingr_cost = 0
         # Validate capital input (min, max, decimal) Max not working as intended
         self.capital.setValidator(self.onlyDouble)
         self.debug = self.findChild(QtWidgets.QTextEdit, "debug")
@@ -72,7 +73,8 @@ class Ui(QtWidgets.QWidget):
         # TODO:  Verify formulas for sell boxes
         capital = float(self.capital.text())
 
-        can_make = math.floor(capital / total_ingr_cost)  # Formulate and set sell quantity ( qty can be made )
+        can_make = math.floor(capital / self.total_ingr_cost)  # Formulate and set sell quantity ( qty can be made )
+        self.can_make = can_make
         self.sellQuantity.setText(str(can_make))
         p = market_data.lookup_prices(item)
 
@@ -81,20 +83,39 @@ class Ui(QtWidgets.QWidget):
 
         sell_flip = sell_individual - capital  # Formulate and set sell flip
         f_sell_flip = "{:.2f}".format(sell_flip)
-        self.sellFlip.setText(f_sell_flip)
+        self.sellFlip.setText(f_sell_flip)        
+        self.fill_tree_values()
+
+    def fill_tree_values(self):
+        index = self.parent_indexes
+        for i in index:
+            if isinstance(i, list):
+                for j in i:
+                    if isinstance(j,list):
+                        qty = self.model.itemFromIndex(j[1])
+                        price = self.model.itemFromIndex(j[2])
+                        t_qty = self.model.itemFromIndex(j[3])
+                        t_cost = self.model.itemFromIndex(j[4])
+                        self.temp_qty = int(float(qty.text()))
+                        self.temp_cost = float(price.text())
+                        total_quantity = self.temp_qty * self.can_make
+                        total_cost = total_quantity * self.temp_cost                        
+                        self.model.setData(t_qty.index(), total_quantity)
+                        self.model.setData(t_cost.index(), total_cost)
+                        
 
     # I've removed all of the string processing...cause I'm OCD and don't like it.
     def populate_treeview(self, data_in):
         self.model.setRowCount(0)
-        global total_ingr_cost
-        total_ingr_cost = 0
+        self.total_ingr_cost = 0
         recipe = data_in
-
-        loop_trigger = recipe.hasSubRecipe()
-
+        self.parent_indexes = []
+        loop_trigger = True
+        children = []
         while loop_trigger:
             loop_trigger = recipe.has_sub_recipe
-            parent = QStandardItem(recipe.getRecipeName())
+            parent = QStandardItem(recipe.getRecipeName()) # Parent Creation
+            self.parent_indexes.append(parent.index())
             parent.setEditable(False)
 
             self.model.appendRow(parent)
@@ -108,17 +129,18 @@ class Ui(QtWidgets.QWidget):
                 ingr = QStandardItem(_i)
                 ingr.setEditable(False)
                 cost = float(price[0]) * int(_j)
-                total_ingr_cost += cost
+                self.total_ingr_cost += cost
                 buy_price = QStandardItem(str(cost))
                 buy_price.setEditable(False)
                 total_qty = QStandardItem(str(0))
                 total_qty.setEditable(False)
                 total_cost = QStandardItem(str(0))
                 total_cost.setEditable(False)
-                parent.appendRow([ingr, qty, buy_price, total_qty, total_cost])
+                parent.appendRow([ingr, qty, buy_price, total_qty, total_cost]) # Child Creation
+                children.append([ingr.index(), qty.index(), buy_price.index(), total_qty.index(), total_cost.index()])
 
             recipe = recipe.sub_recipe
-
+            self.parent_indexes.append(children)
         self.debug_tree.expandAll()
 
     def buy_combo_selected(self):
