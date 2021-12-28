@@ -215,7 +215,7 @@ class Ui(QtWidgets.QWidget):
         buy_item, name, buy_price, make_price = self.dumbshit(rec)  # TODO: left buy_price here because I might want to do something with it.  If not remove it later.
         total_cost = 0
         if buy_item:    # If we're buying the item, use that price in calculations
-            text = "You should <b><u><font color = \"Red\">BUY</font></u></b> the lowest tier recipe item from the <i>Selling</i> box for maximum profit."
+            text = "You should <b><u><font color = \"Red\">BUY</font></u></b> the <u><b>" + name + "</b></u> from the <i>Selling</i> box for maximum profit."
             self.text_info.setText(text)
             loop_val = True
             while loop_val:
@@ -228,7 +228,7 @@ class Ui(QtWidgets.QWidget):
                     total_cost += float(i.buy_price) * int(i.qty)
                 rec = rec.getSubRecipe()
         else:           # If we're making the item, use that price in calculations
-            text = "You should <b><u><font color = \"Red\">CRAFT</font></u></b> the lowest tier recipe rom the <i>Selling</i> box for the maximum profit."
+            text = "You should <b><u><font color = \"Red\">CRAFT</font></u></b> the <u><b>" + name + "</b></u> from the <i>Selling</i> box for the maximum profit."
             self.text_info.setText(text)
             loop_val = True
             while loop_val:
