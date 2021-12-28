@@ -3,7 +3,7 @@ import signal
 import sys
 
 from PyQt5 import QtWidgets, uic, QtCore
-from PyQt5.QtGui import QDoubleValidator, QStandardItemModel, QStandardItem
+from PyQt5.QtGui import QDoubleValidator, QStandardItemModel, QStandardItem, QFont
 
 import constants
 import recipes
@@ -49,7 +49,6 @@ class Ui(QtWidgets.QWidget):
         self.buyFlip.setReadOnly(True)
         self.sellFlip = self.findChild(QtWidgets.QLineEdit, "sellFlip")
         self.sellFlip.setReadOnly(True)
-        
 
         self.parent_indexes = []
         self.can_make = 0
@@ -58,7 +57,7 @@ class Ui(QtWidgets.QWidget):
         # End component initialization
         #
         self.show()
-    
+
     def reset_sell(self):
         self.model.invisibleRootItem().removeRows(0, self.model.rowCount())  # Clear fields pertaining to sell drop down
         self.sellQuantity.setText("")
@@ -76,7 +75,7 @@ class Ui(QtWidgets.QWidget):
             self.reset_buy()
         if self.sellCombo.currentText() != "":
             self.sell_combo_selected()
-        if self.buyCombo.currentText() != "":    
+        if self.buyCombo.currentText() != "":
             self.buy_combo_selected()
 
     def sell_combo_selected(self):
@@ -90,10 +89,10 @@ class Ui(QtWidgets.QWidget):
             self.reset_sell()
             return
         item = self.sellCombo.currentText()
-        #item2 = self.buyCombo.currentText() # TODO:  Logic to make sure the box has something
+        # item2 = self.buyCombo.currentText() # TODO:  Logic to make sure the box has something
         trans_item = lookup_dump_data(item)
-        #trans_item2 = lookup_dump_data(item2)
-        test_recipe = recipes.pull_recipe(trans_item) # TODO:  Fix to work with item2
+        # trans_item2 = lookup_dump_data(item2)
+        test_recipe = recipes.pull_recipe(trans_item)  # TODO:  Fix to work with item2
         # TODO: here
         self.eliminate_unused(test_recipe)
         self.populate_treeview(recipes.pull_recipe(trans_item))  # Fill QTreeView
@@ -124,19 +123,22 @@ class Ui(QtWidgets.QWidget):
         children = []  # Children index list
         while loop_trigger:
             children = []
-            loop_trigger = recipe.hasSubRecipe()
-            parent = QStandardItem(recipe.getRecipeName())  # Parent Creation
+            loop_trigger = recipe.has_sub_recipe
+            parent_font = QFont("Segoe UI", 9, QFont.Bold)
+            parent = QStandardItem(recipe.common_name)  # Parent Creation
+            parent.setFont(parent_font)
             self.parent_indexes.append(parent.index())
             parent.setEditable(False)
-
-            self.model.appendRow(parent)
-            ingr_list = recipe.getIngredients()
+            recipe_string = QStandardItem(str(recipe.buy_price))
+            recipe_string.setFont(parent_font)
+            self.model.appendRow([parent, QStandardItem(""), recipe_string])
+            ingr_list = recipe.ingrs
 
             for _i in ingr_list:
-                ingr = QStandardItem(_i.getIngredientName())
-                qty = QStandardItem(_i.getQuantity())
+                ingr = QStandardItem(_i.common_name)
+                qty = QStandardItem(_i.qty)
 
-                cost = float(_i.getBuyPrice()) * int(_i.getQuantity())  # Cost = Buy Price * Qty
+                cost = float(_i.buy_price) * int(_i.qty)  # Cost = Buy Price * Qty
                 self.total_ingr_cost += cost  # total_ingr_cost = cost of all ingredients not accounting for conversions
 
                 buy_price = QStandardItem(str(cost))
@@ -154,7 +156,6 @@ class Ui(QtWidgets.QWidget):
             recipe = recipe.sub_recipe
             self.parent_indexes.append(children)  # Append children to parent index
         self.debug_tree.expandAll()
-
         self.do_math()  # Do fucking math
 
     def buy_combo_selected(self):
@@ -193,9 +194,9 @@ class Ui(QtWidgets.QWidget):
 
         item = self.sellCombo.currentText()
 
-        #can_make = math.floor(capital / self.total_ingr_cost)  # Formulate and set sell quantity ( qty can be made )
-        #self.can_make = can_make
-        #self.sellQuantity.setText(str(can_make))
+        # can_make = math.floor(capital / self.total_ingr_cost)  # Formulate and set sell quantity ( qty can be made )
+        # self.can_make = can_make
+        # self.sellQuantity.setText(str(can_make))
         p = market_data.lookup_prices(item)
 
         sell_individual = self.can_make * float(p[1])  # Formulate and set sell individual
@@ -209,36 +210,40 @@ class Ui(QtWidgets.QWidget):
             self.sellFlip.setStyleSheet("color: green;")
         self.sellFlip.setText(f_sell_flip)
         self.fill_tree_values()
-        
 
-    def eliminate_unused(self,rec): #TODO: Rename this?  It's not really eliminating unused.  It's more determining if we should use the "made price" or the "bought price"
-        buy_item, name, buy_price, make_price = self.dumbshit(rec)  # TODO: left buy_price here because I might want to do something with it.  If not remove it later.
+    def eliminate_unused(self, rec):  # TODO: Rename this
+        buy_item, name, buy_price, make_price = make_or_buy(rec)
+        # TODO: left buy_price here because I might want to do something with it.  If not remove it later.
         total_cost = 0
-        if buy_item:    # If we're buying the item, use that price in calculations
-            text = "You should <b><u><font color = \"Red\">BUY</font></u></b> the <u><b>" + name + "</b></u> from the <i>Selling</i> box for maximum profit."
+        if buy_item:  # If we're buying the item, use that price in calculations
+            text = "You should <b><u><font color = \"Red\">BUY</font></u></b> the <u><b>" + \
+                   name + "</b></u> from the <i>Selling</i> box for maximum profit."
+
             self.text_info.setText(text)
             loop_val = True
             while loop_val:
                 if rec.has_sub_recipe:
-                    if rec.getSubRecipe().common_name == name:
+                    if rec.sub_recipe.common_name == name:
                         loop_val = False
                 else:
                     loop_val = False
-                for i in rec.getIngredients():
+                for i in rec.ingrs:
                     total_cost += float(i.buy_price) * int(i.qty)
-                rec = rec.getSubRecipe()
-        else:           # If we're making the item, use that price in calculations
-            text = "You should <b><u><font color = \"Red\">CRAFT</font></u></b> the <u><b>" + name + "</b></u> from the <i>Selling</i> box for the maximum profit."
+                rec = rec.sub_recipe
+        else:  # If we're making the item, use that price in calculations
+            text = "You should <b><u><font color = \"Red\">CRAFT</font></u></b> the <u><b>" + \
+                   name + "</b></u> from the <i>Selling</i> box for the maximum profit."
+
             self.text_info.setText(text)
             loop_val = True
             while loop_val:
-                for i in rec.getIngredients():
+                for i in rec.ingrs:
                     this_price = i.buy_price
                     if i.common_name == name:
                         this_price = make_price
                     total_cost += float(this_price) * int(i.qty)
                 if rec.has_sub_recipe:
-                    rec = rec.getSubRecipe()
+                    rec = rec.sub_recipe
                 else:
                     loop_val = rec.has_sub_recipe
         if self.capital.text() == "":
@@ -248,20 +253,21 @@ class Ui(QtWidgets.QWidget):
         self.sellQuantity.setText(str(can_make))
         self.can_make = can_make
 
-    def dumbshit(self, rec):
-        buy_item = False
-        make_price, buy_price, common_name = self.lowest_parent_rec(rec)
-        if make_price > buy_price:
-            buy_item = True
-        return buy_item, common_name, buy_price, make_price
 
-    def lowest_parent_rec(self, rec):
-        while rec.hasSubRecipe():
-            rec = rec.getSubRecipe()
-        costofone = int(rec.getIngredients()[0].getQuantity()) * float(rec.getIngredients()[0].getBuyPrice())
-        rec_buy_price = rec.getBuyPrice()
-        return costofone, rec_buy_price, rec.common_name
+def make_or_buy(rec):
+    buy_item = False
+    make_price, buy_price, common_name = lowest_parent_recipe(rec)
+    if make_price > buy_price:
+        buy_item = True
+    return buy_item, common_name, buy_price, make_price
 
+
+def lowest_parent_recipe(rec):
+    while rec.has_sub_recipe:
+        rec = rec.sub_recipe
+    cost_of_one = int(rec.ingrs[0].qty) * float(rec.ingrs[0].buy_price)
+    rec_buy_price = rec.buy_price
+    return cost_of_one, rec_buy_price, rec.common_name
 
 
 def lookup_dump_data(item, reverse_lookup=False):
