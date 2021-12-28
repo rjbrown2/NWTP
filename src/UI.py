@@ -65,33 +65,21 @@ class Ui(QtWidgets.QWidget):
 
     def sell_combo_selected(self):
         can_make, sell_individual, sell_flip = 0.0, 0.0, 0.0
-
         item = self.sellCombo.currentText()
+
         if not item:
-            self.model.clear()      # Clear fields pertaining to sell drop down
+            # TODO: Change how tree is cleared
+            self.model.clear()  # Clear fields pertaining to sell drop down
             self.sellQuantity.setText("")
             self.sellIndividual.setText("")
             self.sellFlip.setText("")
             return
-
+        item = self.sellCombo.currentText()
         trans_item = lookup_dump_data(item)
-
+        test_recipe = recipes.pull_recipe(trans_item)
+        # TODO: here
+        self.dumbshit(test_recipe)
         self.populate_treeview(recipes.pull_recipe(trans_item))  # Fill QTreeView
-        # TODO:  Verify formulas for sell boxes
-        capital = float(self.capital.text())
-
-        can_make = math.floor(capital / self.total_ingr_cost)  # Formulate and set sell quantity ( qty can be made )
-        self.can_make = can_make
-        self.sellQuantity.setText(str(can_make))
-        p = market_data.lookup_prices(item)
-
-        sell_individual = can_make * float(p[1])  # Formulate and set sell individual
-        self.sellIndividual.setText(str(sell_individual))
-
-        sell_flip = sell_individual - capital  # Formulate and set sell flip
-        f_sell_flip = "{:.2f}".format(sell_flip)
-        self.sellFlip.setText(f_sell_flip)
-        self.fill_tree_values()
 
     def fill_tree_values(self):
         index = self.parent_indexes
@@ -106,7 +94,7 @@ class Ui(QtWidgets.QWidget):
                         self.temp_qty = int(float(qty.text()))
                         self.temp_cost = float(price.text())
                         total_quantity = self.temp_qty * self.can_make  # Total qty = qty * can make
-                        total_cost = total_quantity * self.temp_cost    # Total cost = total qty * cost
+                        total_cost = total_quantity * self.temp_cost  # Total cost = total qty * cost
                         self.model.setData(t_qty.index(), total_quantity)
                         self.model.setData(t_cost.index(), total_cost)
 
@@ -114,11 +102,12 @@ class Ui(QtWidgets.QWidget):
         self.model.setRowCount(0)
         self.total_ingr_cost = 0
         recipe = data_in
-        self.parent_indexes = []        # Parent index list
+        self.parent_indexes = []  # Parent index list
         loop_trigger = True
-        children = []       # Children index list
+        children = []  # Children index list
         while loop_trigger:
-            loop_trigger = recipe.has_sub_recipe
+            children = []
+            loop_trigger = recipe.hasSubRecipe()
             parent = QStandardItem(recipe.getRecipeName())  # Parent Creation
             self.parent_indexes.append(parent.index())
             parent.setEditable(False)
@@ -149,6 +138,8 @@ class Ui(QtWidgets.QWidget):
             self.parent_indexes.append(children)  # Append children to parent index
         self.debug_tree.expandAll()
 
+        self.do_math()  # Do fucking math
+
     def buy_combo_selected(self):
         item = self.buyCombo.currentText()
         capital = float(self.capital.text())
@@ -157,12 +148,53 @@ class Ui(QtWidgets.QWidget):
         p = market_data.lookup_prices(item)
         buy_price, sell_price = p[0], p[1]
 
-        can_buy = math.floor(capital / buy_price)   # Can buy = floor(Capital / buy price)
-        buy_individual = sell_price * can_buy   # Buy individual = sell price * can_buy
-        buy_profit = buy_individual - capital   # Buy Profit = Buy individual - capital
+        can_buy = math.floor(capital / buy_price)  # Can buy = floor(Capital / buy price)
+        buy_individual = sell_price * can_buy  # Buy individual = sell price * can_buy
+        buy_profit = buy_individual - capital  # Buy Profit = Buy individual - capital
         self.buyQuantity.setText(str(can_buy))
         self.buyIndividual.setText(str(buy_individual))
         self.buyFlip.setText(str(buy_profit))
+
+    def do_math(self):
+        # TODO:  Verify formulas for sell boxes
+        capital = float(self.capital.text())
+
+        item = self.sellCombo.currentText()
+
+        can_make = math.floor(capital / self.total_ingr_cost)  # Formulate and set sell quantity ( qty can be made )
+        self.can_make = can_make
+        self.sellQuantity.setText(str(can_make))
+        p = market_data.lookup_prices(item)
+
+        sell_individual = can_make * float(p[1])  # Formulate and set sell individual
+        self.sellIndividual.setText(str(sell_individual))
+
+        sell_flip = sell_individual - capital  # Formulate and set sell flip
+        f_sell_flip = "{:.2f}".format(sell_flip)
+        self.sellFlip.setText(f_sell_flip)
+        self.fill_tree_values()
+        pass
+
+    def eleminate_unused(self):
+        pass
+
+    def dumbshit(self, rec):
+        buy_recipe = False
+        make, buy = self.lowest_parent_rec(rec)
+        print(str(make) + " " + str(buy))
+        if make > buy:
+            buy_recipe = True
+        print(buy_recipe)
+        return buy_recipe
+
+    def lowest_parent_rec(self, rec):
+        while rec.hasSubRecipe():
+            rec = rec.getSubRecipe()
+
+        costofone = rec.getIngredients()[0].getQuantity() * rec.getIngredients()[0].getBuyPrice()
+        rec_buy = rec.getBuyPrice()
+        return costofone, rec_buy
+
 
 
 def lookup_dump_data(item, reverse_lookup=False):

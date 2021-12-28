@@ -3,12 +3,14 @@ import market_data
 
 
 class Recipe:
-    def __init__(self, recipe, common_name, ingrs, has_sub_recipe=False, sub_recipe=None):
+    def __init__(self, recipe, common_name, ingrs, buy_price, sell_price, has_sub_recipe=False, sub_recipe=None):
         self.recipe = recipe
         self.common_name = common_name
         self.ingrs = ingrs
         self.has_sub_recipe = has_sub_recipe
         self.sub_recipe = sub_recipe
+        self.buy_price = buy_price
+        self.sell_price = sell_price
 
     def getRecipe(self):
         return self.recipe
@@ -25,14 +27,20 @@ class Recipe:
     def getSubRecipe(self):
         return self.sub_recipe
 
+    def getBuyPrice(self):
+        return self.buy_price
+
+    def getSellPrice(self):
+        return self.sell_price
 
 class Ingredient:
-    def __init__(self, ingredient, common_name, qty, buy_price, sell_price):
+    def __init__(self, ingredient, common_name, qty, buy_price, sell_price, parent_recipe=None):
         self.ingredient = ingredient
         self.common_name = common_name
         self.qty = qty
         self.buy_price = buy_price
         self.sell_price = sell_price
+        self.parent_recipe = parent_recipe
 
     def getIngredient(self):
         return self.ingredient
@@ -48,6 +56,9 @@ class Ingredient:
 
     def getSellPrice(self):
         return self.sell_price
+
+    def getParent(self):
+        return self.parent_recipe
 
 
 def pull_recipe(recipe_name):
@@ -83,7 +94,7 @@ def pull_recipe(recipe_name):
                     ingrlist.append(line.split(",")[48])
                     qtylist.append(line.split(",")[56])
 
-                # recursively check for sub recipes
+                # Recursively check for recipes
                 for r in ingrlist:
                     sub_rec = pull_recipe(r)
                     if sub_rec is not None:
@@ -91,6 +102,9 @@ def pull_recipe(recipe_name):
                         has_sub_recipe = True
                         sub_recipe = sub_rec
                         cname = name_to_common(recipe_name)
+
+                        prices = market_data.lookup_prices(cname)
+
                         _t_list = []
                         for _i, _j in zip(ingrlist, qtylist):
                             icname = name_to_common(_i)
@@ -98,24 +112,25 @@ def pull_recipe(recipe_name):
                             _t = Ingredient(_i, icname, _j, prices[0], prices[1])  # Create recipe object
                             _t_list.append(_t)
                         ingrlist = _t_list
-                        return Recipe(recipe_name, cname, ingrlist, has_sub_recipe, sub_recipe)
+                        return Recipe(recipe_name, cname, ingrlist, prices[0], prices[1], has_sub_recipe, sub_recipe)
 
                 _t_list = []
                 for _i, _j in zip(ingrlist, qtylist):
                     if _i in constants.variable_ingrs:
                         cheapest = determine_cheapest(_i)
                         prices = market_data.lookup_prices(cheapest)
-                        _t = Ingredient(_i, cheapest, _j, prices[0], prices[1])
+                        _t = Ingredient(_i, cheapest, _j, prices[0], prices[1])  # Converted item to cheapest item
                         _t_list.append(_t)
                     else:
                         icname = name_to_common(_i)
                         prices = market_data.lookup_prices(icname)
-                        _t = Ingredient(_i, icname, _j, prices[0], prices[1])
+                        _t = Ingredient(_i, icname, _j, prices[0], prices[1])  # Else item is fine, no sub rec
                         _t_list.append(_t)
 
                 ingrlist = _t_list
                 cname = name_to_common(recipe_name)
-                return Recipe(recipe_name, cname, ingrlist)
+                prices = market_data.lookup_prices(cname)
+                return Recipe(recipe_name, cname, ingrlist, prices[0], prices[1])
 
         file.close()
     except FileNotFoundError:

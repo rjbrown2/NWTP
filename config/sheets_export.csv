@@ -1,49 +1,50 @@
 ITEM,BUY,SELL,DATE UPDATED
-Charcoal,0.15,0.22,Dec-23-2021
-Iron Ore,0.1,0.11,Dec-23-2021
-Starmetal Ore,0.79,0.87,Dec-23-2021
-Orichalcum Ore,1.02,1.21,Dec-23-2021
-Silver Ore,0.1,0.13,Dec-23-2021
-Gold Ore,0.05,0.17,Dec-23-2021
-Platinum Ore,0.56,0.75,Dec-23-2021
-Iron Ingot,0.26,0.43,Dec-23-2021
-Steel Ingot,1.59,2,Dec-23-2021
-Starmetal Ingot,5.02,9.9,Dec-23-2021
-Orichalcum Ingot,19.5,23.09,Dec-23-2021
-Silver Ingot,0.2,0.39,Dec-23-2021
-Gold Ingot,0.97,1.7,Dec-23-2021
-Platinum Ingot,4.9,8.15,Dec-23-2021
-Stone,0.08,0.11,Dec-23-2021
-Stone Block,0.2,0.28,Dec-23-2021
-Stone Brick,0.78,0.99,Dec-23-2021
-Lodestone,0.72,1.47,Dec-23-2021
-Lodestone Brick,3.45,5.5,Dec-23-2021
-Obsidian Voidstone,16.5,23,Dec-23-2021
-Fibers,0.13,0.14,Dec-23-2021
-Silk Threads,0.36,0.57,Dec-23-2021
-Wirefiber,0.25,0.38,Dec-23-2021
-Linen,0.37,0.58,Dec-23-2021
-Sateen,0.79,1.07,Dec-23-2021
-Silk,3.42,4.38,Dec-23-2021
-Infused Silk,6.31,7.93,Dec-23-2021
-Green Wood,0.08,0.1,Dec-23-2021
-Aged Wood,0.09,0.1,Dec-23-2021
-Timber,0.24,0.43,Dec-23-2021
-Lumber,0.64,0.94,Dec-23-2021
-Wyrdwood,0.89,0.1,Dec-23-2021
-Ironwood,0.7,0.9,Dec-23-2021
-Wyrdwood Plank,5.25,9.74,Dec-23-2021
-Ironwood Plank,14.6,17.99,Dec-23-2021
-Rawhide,0.15,0.25,Dec-23-2021
-Thick Hide,0.31,0.41,Dec-23-2021
-Iron Hide,0.02,0.08,Dec-23-2021
-Coarse Leather,0.4,0.7,Dec-23-2021
-Rugged Leather,0.6,1.39,Dec-23-2021
-Layered Leather,2.86,3.83,Dec-23-2021
-Infused Leather,4.02,5.3,Dec-23-2021
-Sandpaper,0.63,0.88,Dec-23-2021
-Tannin,0.05,1,Dec-23-2021
-Crossweave,0.01,0.05,Dec-23-2021
-Flux,0.93,1.48,Dec-23-2021
-Cheapest Wood,0.1,0.17,Dec-23-2021
-Arcane Lodestone,0.9,1.2,
+Charcoal,0.18,0.24,Dec-27-2021
+Iron Ore,0.09,0.10,Dec-27-2021
+Starmetal Ore,0.83,0.90,Dec-27-2021
+Orichalcum Ore,1.47,1.80,Dec-27-2021
+Silver Ore,0.18,0.29,Dec-27-2021
+Gold Ore,0.06,0.17,Dec-27-2021
+Platinum Ore,0.42,0.75,Dec-27-2021
+Iron Ingot,0.26,0.34,Dec-27-2021
+Steel Ingot,1.23,1.56,Dec-27-2021
+Starmetal Ingot,7.56,8.75,Dec-27-2021
+Orichalcum Ingot,20.60,23.50,Dec-27-2021
+Silver Ingot,0.54,0.95,Dec-27-2021
+Gold Ingot,0.75,1.10,Dec-27-2021
+Platinum Ingot,4.25,7.50,Dec-27-2021
+Stone,0.70,0.18,Dec-27-2021
+Stone Block,0.27,0.49,Dec-27-2021
+Stone Brick,0.52,0.85,Dec-27-2021
+Lodestone,0.73,0.88,Dec-27-2021
+Lodestone Brick,3.36,5.21,Dec-27-2021
+Obsidian Voidstone,17.31,23.00,Dec-27-2021
+Fibers,0.11,0.13,Dec-27-2021
+Silk Threads,0.53,0.69,Dec-27-2021
+Wirefiber,0.32,0.80,Dec-27-2021
+Linen,0.45,0.69,Dec-27-2021
+Sateen,0.67,2.49,Dec-27-2021
+Silk,3.04,4.40,Dec-27-2021
+Infused Silk,6.31,7.98,Dec-27-2021
+Green Wood,0.09,0.10,Dec-27-2021
+Aged Wood,0.09,0.16,Dec-27-2021
+Timber,0.22,0.43,Dec-27-2021
+Lumber,1.00,1.40,Dec-27-2021
+Wyrdwood,0.56,0.65,Dec-27-2021
+Ironwood,0.64,0.74,Dec-27-2021
+Wyrdwood Plank,3.61,6.00,Dec-27-2021
+Ironwood Plank,7.00,14.49,Dec-27-2021
+Rawhide,0.14,0.14,Dec-27-2021
+Thick Hide,0.20,0.97,Dec-27-2021
+Iron Hide,0.10,0.16,Dec-27-2021
+Coarse Leather,0.36,0.47,Dec-27-2021
+Rugged Leather,0.78,1.00,Dec-27-2021
+Layered Leather,2.30,3.55,Dec-27-2021
+Infused Leather,5.06,5.89,Dec-27-2021
+Sandpaper,0.56,0.88,Dec-27-2021
+Tannin,0.05,0.17,Dec-27-2021
+Crossweave,0.03,0.15,Dec-27-2021
+Flux,1.30,1.74,Dec-27-2021
+Solvent,0.63,1.75,Dec-27-2021
+Cheapest Wood,9999.00,99999.00,Dec-27-2021
+Arcane Lodestone,0.15,0.53,Dec-27-2021
