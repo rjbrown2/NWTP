@@ -73,6 +73,8 @@ class Ui(QtWidgets.QWidget):
         if self.capital.text() == "":
             self.reset_sell()
             self.reset_buy()
+        if self.capital.text() != "" and float(self.capital.text()) > 500000.00:
+            self.capital.setText(str(500000.00))
         if self.sellCombo.currentText() != "":
             self.sell_combo_selected()
         if self.buyCombo.currentText() != "":
