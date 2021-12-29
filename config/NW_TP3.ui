@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>770</width>
-    <height>500</height>
+    <height>553</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -24,42 +24,97 @@
     <normaloff>../resources/NW-coins-96x.ico</normaloff>../resources/NW-coins-96x.ico</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLineEdit" name="Capital">
-     <property name="text">
-      <string>10000</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLabel" name="capital_label">
-     <property name="text">
-      <string>Capital</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="QLabel" name="buy_quantity_label">
-     <property name="text">
-      <string>Quantity</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="3">
+   <item row="1" column="3">
     <widget class="QLabel" name="buy_individual_label">
      <property name="text">
       <string>Individual</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="4">
-    <widget class="QLabel" name="buy_flip_label">
+   <item row="1" column="2">
+    <widget class="QLabel" name="buy_quantity_label">
      <property name="text">
-      <string>Flip Profit</string>
+      <string>Quantity</string>
      </property>
     </widget>
    </item>
    <item row="1" column="0">
+    <widget class="QLineEdit" name="Capital">
+     <property name="text">
+      <string>10000</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <widget class="QLabel" name="sell_quantity_label">
+     <property name="text">
+      <string>Quantity</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLabel" name="capital_label">
+     <property name="text">
+      <string>Capital</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="3">
+    <widget class="QLabel" name="sell_individual_label">
+     <property name="text">
+      <string>Individual</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="4">
+    <widget class="QLineEdit" name="buyFlip"/>
+   </item>
+   <item row="4" column="3">
+    <widget class="QLineEdit" name="sellIndividual"/>
+   </item>
+   <item row="4" column="4">
+    <widget class="QLineEdit" name="sellFlip"/>
+   </item>
+   <item row="2" column="3">
+    <widget class="QLineEdit" name="buyIndividual"/>
+   </item>
+   <item row="5" column="0" colspan="4">
+    <widget class="QTreeView" name="debugTreeView"/>
+   </item>
+   <item row="6" column="0" colspan="5">
+    <widget class="QLabel" name="text_info">
+     <property name="text">
+      <string>Please familarize yourself with the README and instructions for use.  </string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="4">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap>../resources/StrillesCedias.xpm</pixmap>
+     </property>
+     <property name="scaledContents">
+      <bool>false</bool>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QLineEdit" name="buyQuantity">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2">
+    <widget class="QLineEdit" name="sellQuantity"/>
+   </item>
+   <item row="2" column="0">
     <widget class="QComboBox" name="buy_comboBox">
      <item>
       <property name="text">
@@ -303,48 +358,28 @@
      </item>
     </widget>
    </item>
-   <item row="1" column="1">
+   <item row="2" column="1">
     <widget class="QLabel" name="buy_label">
      <property name="text">
       <string>Buying</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="2">
-    <widget class="QLineEdit" name="buyQuantity">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="3">
-    <widget class="QLineEdit" name="buyIndividual"/>
-   </item>
    <item row="1" column="4">
-    <widget class="QLineEdit" name="buyFlip"/>
-   </item>
-   <item row="2" column="2">
-    <widget class="QLabel" name="sell_quantity_label">
+    <widget class="QLabel" name="buy_flip_label">
      <property name="text">
-      <string>Quantity</string>
+      <string>Flip Profit</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="3">
-    <widget class="QLabel" name="sell_individual_label">
-     <property name="text">
-      <string>Individual</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="4">
+   <item row="3" column="4">
     <widget class="QLabel" name="sell_flip_label">
      <property name="text">
       <string>Flip Profit</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="4" column="0">
     <widget class="QComboBox" name="sell_comboBox">
      <item>
       <property name="text">
@@ -473,47 +508,28 @@
      </item>
     </widget>
    </item>
-   <item row="3" column="1">
+   <item row="4" column="1">
     <widget class="QLabel" name="sell_label">
      <property name="text">
       <string>Selling</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="2">
-    <widget class="QLineEdit" name="sellQuantity"/>
-   </item>
-   <item row="3" column="3">
-    <widget class="QLineEdit" name="sellIndividual"/>
-   </item>
-   <item row="3" column="4">
-    <widget class="QLineEdit" name="sellFlip"/>
-   </item>
-   <item row="4" column="0" colspan="4">
-    <widget class="QTreeView" name="debugTreeView"/>
-   </item>
-   <item row="4" column="4">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string/>
+   <item row="0" column="2">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
-     <property name="pixmap">
-      <pixmap>../resources/StrillesCedias.xpm</pixmap>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
      </property>
-     <property name="scaledContents">
-      <bool>false</bool>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
      </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0" colspan="5">
-    <widget class="QLabel" name="text_info">
-     <property name="text">
-      <string>Please familarize yourself with the README and instructions for use.  </string>
-     </property>
-    </widget>
+    </spacer>
    </item>
   </layout>
  </widget>

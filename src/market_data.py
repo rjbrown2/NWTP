@@ -11,6 +11,7 @@ def fetch_market_data():
     req = requests.get(req_url, allow_redirects=True)
     with open("../config/sheets_export.csv", "wb") as f:
         f.write(req.content)
+    print("Fetched data")
 
 
 def lookup_prices(item):

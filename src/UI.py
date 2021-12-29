@@ -1,9 +1,11 @@
 import math
 import signal
 import sys
+import webbrowser
 
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtGui import QDoubleValidator, QStandardItemModel, QStandardItem, QFont
+from PyQt5.QtWidgets import QMenuBar, QAction, QMessageBox
 
 import constants
 import recipes
@@ -17,6 +19,7 @@ class Ui(QtWidgets.QWidget):
         uic.loadUi('../config/NW_TP3.ui', self)
         self.setWindowTitle("New World Trading Post")
         self.debug_tree = self.findChild(QtWidgets.QTreeView, "debugTreeView")
+        self.menu_bar = QMenuBar(self)
         self.model = QStandardItemModel()
         self.model.setHorizontalHeaderLabels(["Recipe", "Qty", "Cost", "Total Qty", "Total Cost"])
         self.debug_tree.header().setDefaultSectionSize(410)
@@ -57,6 +60,37 @@ class Ui(QtWidgets.QWidget):
         # End component initialization
         #
         self.show()
+        self.create_menus()
+
+    def create_menus(self):
+        files_menu = self.menu_bar.addMenu("Files")
+        reset_market = files_menu.addAction("Reset market data")
+        reset_market.triggered.connect(self.fetch_market_action)
+
+        help_menu = self.menu_bar.addMenu("Help")
+        report_issue = help_menu.addAction("Report Issue")
+        report_issue.triggered.connect(self.report_action)
+
+        help_menu.addAction("Read me")
+
+        about = help_menu.addAction("About")
+        about.triggered.connect(self.about_action)
+
+    def read_me_action(self):
+        pass
+
+    def about_action(self):
+        about_dialog = QMessageBox()
+        about_dialog.setWindowTitle("About this application")
+        about_dialog.setText("THIS WAS FUCKING PAINFUL")
+        about_dialog.exec()
+        pass
+
+    def report_action(self):
+        webbrowser.open("https://github.com/rjbrown2/NWTP/issues/new")
+
+    def fetch_market_action(self):
+        market_data.fetch_market_data()
 
     def reset_sell(self):
         self.model.invisibleRootItem().removeRows(0, self.model.rowCount())  # Clear fields pertaining to sell drop down
