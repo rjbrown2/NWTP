@@ -11,7 +11,13 @@ class Recipe:
         self.sub_recipe = sub_recipe
         self.buy_price = buy_price
         self.sell_price = sell_price
-
+        self.craft_price = self.determine_craft_price()
+    
+    def determine_craft_price(self):
+        craft_price = 0
+        for ingredient in self.ingrs:            
+            craft_price += (float(ingredient.buy_price) * int(ingredient.qty))
+        return craft_price
 
 class Ingredient:
     def __init__(self, ingredient, common_name, qty, buy_price, sell_price, parent_recipe=None):
@@ -21,7 +27,8 @@ class Ingredient:
         self.buy_price = buy_price
         self.sell_price = sell_price
         self.parent_recipe = parent_recipe
-
+        self.craft_price = 0.0
+        self.can_be_crafted = False     
 
 def pull_recipe(recipe_name):
     ingrlist = []
@@ -71,6 +78,7 @@ def pull_recipe(recipe_name):
                             icname = name_to_common(_i)
                             i_prices = market_data.lookup_prices(icname)
                             _t = Ingredient(_i, icname, _j, i_prices[0], i_prices[1])  # Create recipe object
+                            _t.can_be_crafted = True
                             _t_list.append(_t)
                         ingrlist = _t_list
                         return Recipe(recipe_name, cname, ingrlist, r_prices[0], r_prices[1], has_sub_recipe, sub_recipe)
@@ -86,6 +94,7 @@ def pull_recipe(recipe_name):
                         icname = name_to_common(_i)
                         i_prices = market_data.lookup_prices(icname)
                         _t = Ingredient(_i, icname, _j, i_prices[0], i_prices[1])  # Else item is fine, no sub rec
+                        _t.can_be_crafted = False
                         _t_list.append(_t)
 
                 ingrlist = _t_list

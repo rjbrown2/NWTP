@@ -97,24 +97,40 @@ class Ui(QtWidgets.QWidget):
         test_recipe = recipes.pull_recipe(trans_item)  # TODO:  Fix to work with item2
         # TODO: here
         self.eliminate_unused(test_recipe)
-        self.populate_treeview(recipes.pull_recipe(trans_item))  # Fill QTreeView
+        self.populate_treeview(test_recipe)  # Fill QTreeView
+        print("RECIPE NAME: ", str(test_recipe.common_name))
+        print("CRAFT PRICE: " + str(test_recipe.craft_price))
 
     def fill_tree_values(self):
         index = self.parent_indexes
+        some_name = "Linen"
+        mult_quantity = False
+        mult_amount = 0
+        k = 0
         for i in index:
             if isinstance(i, list):
                 for j in i:
                     if isinstance(j, list):
+                        if self.model.itemFromIndex(j[0]).text() == some_name:
+                            mult_amount = int(self.model.itemFromIndex(j[1]).text())
                         qty = self.model.itemFromIndex(j[1])
                         price = self.model.itemFromIndex(j[2])
                         t_qty = self.model.itemFromIndex(j[3])
                         t_cost = self.model.itemFromIndex(j[4])
-                        temp_qty = int(float(qty.text()))
-                        temp_cost = float(price.text())
+                        if mult_quantity:
+                            temp_qty = int(float(qty.text())) * mult_amount
+                            temp_cost = float(price.text()) * mult_amount
+                        else:
+                            temp_qty = int(float(qty.text()))
+                            temp_cost = float(price.text())
                         total_quantity = temp_qty * self.can_make  # Total qty = qty * can make
                         total_cost = self.can_make * temp_cost  # Total cost = total qty * cost
                         self.model.setData(t_qty.index(), total_quantity)
                         self.model.setData(t_cost.index(), total_cost)
+            else:
+                if self.model.item(k,0).text() == some_name:
+                    mult_quantity = True
+                k += 1
 
     def populate_treeview(self, data_in):
         self.model.setRowCount(0)
@@ -220,34 +236,29 @@ class Ui(QtWidgets.QWidget):
         if buy_item:  # If we're buying the item, use that price in calculations
             text = "You should <b><u><font color = \"Red\">BUY</font></u></b> the <u><b>" + \
                    name + "</b></u> from the <i>Selling</i> box for maximum profit."
-
-            self.text_info.setText(text)
-            loop_val = True
-            while loop_val:
-                if rec.has_sub_recipe:
-                    if rec.sub_recipe.common_name == name:
-                        loop_val = False
-                else:
-                    loop_val = False
-                for i in rec.ingrs:
-                    total_cost += float(i.buy_price) * int(i.qty)
-                rec = rec.sub_recipe
-        else:  # If we're making the item, use that price in calculations
+        else:   # Crafting the item
             text = "You should <b><u><font color = \"Red\">CRAFT</font></u></b> the <u><b>" + \
                    name + "</b></u> from the <i>Selling</i> box for the maximum profit."
 
-            self.text_info.setText(text)
-            loop_val = True
-            while loop_val:
-                for i in rec.ingrs:
-                    this_price = i.buy_price
-                    if i.common_name == name:
+        self.text_info.setText(text)
+        loop_val = True
+        while loop_val:
+            if rec.has_sub_recipe:
+                if rec.sub_recipe.common_name == name:
+                    loop_val = False
+            else:
+                loop_val = False
+            for i in rec.ingrs:
+                this_price = i.buy_price
+                if i.common_name == name:
+                    if not buy_item:    # Crafting the item
                         this_price = make_price
-                    total_cost += float(this_price) * int(i.qty)
-                if rec.has_sub_recipe:
-                    rec = rec.sub_recipe
-                else:
-                    loop_val = rec.has_sub_recipe
+                        i.buy_price = make_price
+                    else:               # Buying the item
+                        # this_price = buy_price
+                        pass
+                total_cost += float(i.buy_price) * int(i.qty)
+            rec = rec.sub_recipe
         if self.capital.text() == "":
             self.reset_sell()
             return
