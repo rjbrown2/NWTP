@@ -6,7 +6,7 @@ import webbrowser
 
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtCore import QThread
-from PyQt5.QtGui import QDoubleValidator, QStandardItemModel, QStandardItem, QFont
+from PyQt5.QtGui import QDoubleValidator, QStandardItemModel, QStandardItem, QFont, QIcon
 from PyQt5.QtWidgets import QMenuBar, QAction, QMessageBox, QProgressBar
 
 import constants
@@ -158,17 +158,6 @@ class Ui(QtWidgets.QWidget):
         if not item:
             self.reset_sell()
             return
-        item = self.sellCombo.currentText()
-        # item2 = self.buyCombo.currentText() # TODO:  Logic to make sure the box has something
-        # trans_item = lookup_dump_data(item)
-        # trans_item2 = lookup_dump_data(item2)
-
-        # test_recipe = recipes.pull_recipe(trans_item)  # TODO:  Fix to work with item2
-        # TODO: here
-        # self.eliminate_unused(test_recipe)
-        # self.populate_treeview(test_recipe)  # Fill QTreeView
-        # print("RECIPE NAME: ", str(test_recipe.common_name))
-        # print("CRAFT PRICE: " + str(test_recipe.craft_price))
 
     def fill_tree_values(self):
         index = self.parent_indexes
@@ -228,6 +217,8 @@ class Ui(QtWidgets.QWidget):
             parent_font = QFont("Segoe UI", 9, QFont.Bold)
             parent = QStandardItem(recipe.common_name)  # Parent Creation
             parent.setFont(parent_font)
+            if not recipe.should_be_crafted:
+                parent.setIcon(QIcon("../resources/NW-coins-96x.ico"))
             self.parent_indexes.append(parent.index())
             parent.setEditable(False)
             recipe_string = QStandardItem(str(recipe.buy_price))
@@ -242,7 +233,7 @@ class Ui(QtWidgets.QWidget):
                 cost = float(_i.buy_price) * int(_i.qty)  # Cost = Buy Price * Qty
                 self.total_ingr_cost += cost  # total_ingr_cost = cost of all ingredients not accounting for conversions
 
-                buy_price = QStandardItem(str(cost))
+                buy_price = QStandardItem(str("{:.2f}".format(cost)))
                 buy_price.setEditable(False)
 
                 total_qty = QStandardItem(str(0))
@@ -257,7 +248,10 @@ class Ui(QtWidgets.QWidget):
             recipe = recipe.sub_recipe
             self.parent_indexes.append(children)  # Append children to parent index
         self.debug_tree.expandAll()
-        self.do_math()  # Do fucking math
+        text = "<p><b>Note:</b> The <img src=\"../resources/NW-coins-96x.ico\" width=\"16\" " \
+               "height=\"16\">&nbsp;&nbsp;icon means you should purchase these items for the most profit! "
+        self.text_info.setText(text)
+        self.do_math(current_book)  # Do fucking math
 
     def buy_combo_selected(self):
         item = self.buyCombo.currentText()
@@ -284,7 +278,12 @@ class Ui(QtWidgets.QWidget):
 
         self.buyFlip.setText(str("{:.2f}".format(buy_profit)))
 
-    def do_math(self):
+    # TODO: Finish this, might still have issues in recipe file
+    def total_cost(self, recipe):
+        for ingredient in recipe.ingrs:
+            pass
+
+    def do_math(self, current_cookbook):
         # TODO:  Verify formulas for sell boxes
         if self.capital.text() == "":
             self.reset_buy()
@@ -294,10 +293,17 @@ class Ui(QtWidgets.QWidget):
         capital = float(self.capital.text())
 
         item = self.sellCombo.currentText()
+        print(current_cookbook)
+        #self.total_cost(recipes.lookup_recipe(item, current_cookbook))
+        print("MATH: COST: ", self.total_ingr_cost)
+        # recipe = recipes.lookup_recipe(item)
 
-        # can_make = math.floor(capital / self.total_ingr_cost)  # Formulate and set sell quantity ( qty can be made )
-        # self.can_make = can_make
-        # self.sellQuantity.setText(str(can_make))
+        # for ingredient in recipe:
+        #     ingredient_cost = ingredient.buy_price
+        #     if ingredient.is_craftable:
+        #         if ingredient.buy_price > ingredient.total_craft_price:
+        #             ingredient_cost = ingredient.total_craft_price
+        #     total_cost += ingredient_cost
         p = market_data.lookup_prices(item)
 
         sell_individual = self.can_make * float(p[1])  # Formulate and set sell individual

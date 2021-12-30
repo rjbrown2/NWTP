@@ -25,13 +25,8 @@ class Recipe:
         self.sub_recipe = sub_recipe
         self.buy_price = buy_price
         self.sell_price = sell_price
-        self.craft_price = self.determine_craft_price()
-
-    def determine_craft_price(self):
-        craft_price = 0
-        for ingredient in self.ingrs:
-            craft_price += (float(ingredient.buy_price) * int(ingredient.qty))
-        return craft_price
+        self.total_craft_price = 0
+        self.should_be_crafted = False
 
 
 class Ingredient:
@@ -42,7 +37,7 @@ class Ingredient:
         self.buy_price = buy_price
         self.sell_price = sell_price
         self.parent_recipe = parent_recipe
-        self.craft_price = 0.0
+        self.is_craftable = False
         self.can_be_crafted = False
 
 
@@ -142,9 +137,11 @@ def sort_recipes():
                 print(recipe.recipe + " was unsorted")
 
     print("Setting sub recipes...")
+    # TODO: Add flags to say ingredient is craftable
     for recipe in smelting_cookbook.values():
         for x in recipe.ingrs:
             if x.ingredient != "CharcoalT1" and x.ingredient in smelting_cookbook.keys():
+                x.is_craftable = True
                 recipe.has_sub_recipe = True
                 recipe.sub_recipe = smelting_cookbook[x.ingredient]
                 break
@@ -152,6 +149,7 @@ def sort_recipes():
     for recipe in leatherworking_cookbook.values():
         for x in recipe.ingrs:
             if x.ingredient in leatherworking_cookbook.keys():
+                x.is_craftable = True
                 recipe.has_sub_recipe = True
                 recipe.sub_recipe = leatherworking_cookbook[x.ingredient]
                 break
@@ -159,6 +157,7 @@ def sort_recipes():
     for recipe in weaving_cookbook.values():
         for x in recipe.ingrs:
             if x.ingredient in weaving_cookbook.keys():
+                x.is_craftable = True
                 recipe.has_sub_recipe = True
                 recipe.sub_recipe = weaving_cookbook[x.ingredient]
                 break
@@ -166,6 +165,7 @@ def sort_recipes():
     for recipe in woodworking_cookbook.values():
         for x in recipe.ingrs:
             if x.ingredient in woodworking_cookbook.keys():
+                x.is_craftable = True
                 recipe.has_sub_recipe = True
                 recipe.sub_recipe = woodworking_cookbook[x.ingredient]
                 break
@@ -173,6 +173,7 @@ def sort_recipes():
     for recipe in stonecutting_cookbook.values():
         for x in recipe.ingrs:
             if x.ingredient in stonecutting_cookbook.keys():
+                x.is_craftable = True
                 recipe.has_sub_recipe = True
                 recipe.sub_recipe = stonecutting_cookbook[x.ingredient]
                 break
@@ -190,10 +191,67 @@ def build_cookbook():
     else:
         with open(constants.RECIPE_DICT, "rb") as file:
             master_cookbook = pickle.load(file)
+
+    master_cookbook = modify_cookbooks(master_cookbook)
+    print(master_cookbook)
     return master_cookbook
+
+
+def modify_cookbooks(master_cookbook):
+    # smelting_cookbook = {}
+    # leatherworking_cookbook = {}
+    # weaving_cookbook = {}
+    # woodworking_cookbook = {}
+    # stonecutting_cookbook = {}
+    temp_list = [master_cookbook.smelting, master_cookbook.leatherworking, master_cookbook.weaving,
+                 master_cookbook.woodworking, master_cookbook.stonecutting]
+    return_list = []
+    for cookbook in temp_list:
+        for recipe in cookbook.values():
+            _, mod_dict = determine_craft_price(recipe, cookbook)
+        return_list.append(mod_dict)
+    mod_book = CookBook(return_list[0], return_list[1], return_list[2], return_list[3], return_list[4])
+    return mod_book
+
 
     # TODO: Add a way to determine the cheapest of "hide"
     # TODO: Add a way to determine the cheapest of "fiber"
+
+
+def determine_craft_price(rec, rec_dict):
+    # rec_dict should be a master_cookbook.{cookbook}
+    for ingr in rec.ingrs:
+        print("\tINGR: ", ingr.common_name)
+        recipe = lookup_recipe(ingr.common_name, rec_dict)
+        # print(ingr.common_name)
+        if recipe:
+            print("\trecipe is craftable *************")
+            ingr.is_craftable = True
+            recipe.is_craftable = True
+            # print(recipe.is_craftable)
+            if recipe.should_be_crafted:
+                rec.sub_recipe.should_be_crafted = True
+                ingr.should_be_crafted = True
+            if recipe.total_craft_price != 0:
+                print("\t\t@@@ Using Current price for: ", recipe.common_name)
+                price, _ = determine_craft_price(recipe, rec_dict)
+                rec.total_craft_price += recipe.total_craft_price
+            else:
+                print("\t\t@@@ Looking up recipe: ", recipe.common_name)
+                price, rec_dict = determine_craft_price(recipe, rec_dict)
+                recipe.total_craft_price += float(price)
+        else:
+            rec.total_craft_price += float(ingr.buy_price) * int(ingr.qty)
+    if rec.total_craft_price < rec.buy_price:
+        rec.should_be_crafted = True
+    return rec.total_craft_price, rec_dict
+
+
+def lookup_recipe(rec_name, cookbook):
+    # cookbook should be a master_cookbook.{cookbook}
+    for recipe in cookbook.keys():
+        if recipe == rec_name:
+            return cookbook[rec_name]
 
 
 def determine_cheapest(item):
@@ -213,12 +271,17 @@ def determine_cheapest(item):
         return cheapest
 
 
-def name_to_common(item):
+def name_to_common(item, reverse=False):
     dict = constants.dict
     trans_item = item
     for piece in dict:
-        if item == piece[0]:
-            trans_item = piece[1]
-            break
+        if reverse:
+            if item == piece[1]:
+                trans_item == piece[0]
+                break
+        else:
+            if item == piece[0]:
+                trans_item = piece[1]
+                break
         # else: print("NOTHING FOUND")
     return trans_item
