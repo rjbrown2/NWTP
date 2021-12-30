@@ -27,13 +27,14 @@ def lookup_prices(item):
             price_list.append(float(as_list[2]))
             break
     if not price_list:
-        print("Price list is empty, did not find " + str(item))
+        #print("Price list is empty, did not find " + str(item))
         _t = UI.lookup_dump_data(item)
         if _t == as_list[0]:
             price_list.append(float(as_list[1]))
             price_list.append(float(as_list[2]))
         else:
-            error_string = "NO VALUE FOUND FOR " + str(item)
-            raise ValueError(error_string)
+            #error_string = "NO VALUE FOUND FOR " + str(item)
+            #raise ValueError(error_string)
+            return None
     else:
         return price_list

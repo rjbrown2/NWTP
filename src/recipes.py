@@ -1,5 +1,8 @@
 import constants
 import market_data
+import pickle
+from os.path import exists
+import UI
 
 
 class Recipe:
@@ -11,13 +14,9 @@ class Recipe:
         self.sub_recipe = sub_recipe
         self.buy_price = buy_price
         self.sell_price = sell_price
-        self.craft_price = self.determine_craft_price()
-    
-    def determine_craft_price(self):
-        craft_price = 0
-        for ingredient in self.ingrs:            
-            craft_price += (float(ingredient.buy_price) * int(ingredient.qty))
-        return craft_price
+        self.total_craft_price = 0
+        self.should_be_crafted = False
+        #self.craft_price = self.det_craft_price(self)
 
 class Ingredient:
     def __init__(self, ingredient, common_name, qty, buy_price, sell_price, parent_recipe=None):
@@ -27,8 +26,162 @@ class Ingredient:
         self.buy_price = buy_price
         self.sell_price = sell_price
         self.parent_recipe = parent_recipe
-        self.craft_price = 0.0
+        self.is_craftable = False
         self.can_be_crafted = False     
+
+# TODO: Rework this so that it only happens once, and then we can use a library of the objects.
+
+def create_recipe_dict():
+    rec_dict = []
+    file_exists = exists(constants.RECIPE_DICT)
+    if not file_exists:
+        with open(constants.MARKET_DATA_LOCAL, 'r') as recipe_file:
+            recipe_file.readline()
+            for line in recipe_file:
+                print(line)
+                name = line.split(",")[0]
+                #print("** ", name)
+                temp_name = UI.lookup_dump_data(name)
+                #print("@* ", temp_name)
+                recipe = pull_recipe(temp_name)
+                rec_dict.append([name, recipe])
+            print(rec_dict)
+        with open(constants.RECIPE_DICT, 'wb') as recipe_dictionary:
+            pickle.dump(rec_dict, recipe_dictionary)        
+    else:
+        with open(constants.RECIPE_DICT, 'rb') as file:
+            rec_dict = pickle.load(file)
+    print(rec_dict)      
+    rec_dict = manip_dict(rec_dict)
+    print_dict(rec_dict)
+    return rec_dict
+
+def manip_dict(rec_dict):
+    i = 0
+    for item in rec_dict:
+        print("Manip_Dict: ", item[0])
+        if item[1] is not None:
+            #print("SETTING TO TRUE")
+            rec_dict[i][1].is_craftable = True
+            _, rec_dict = determine_craft_price(item[1], rec_dict)
+        i += 1
+    return rec_dict
+
+def determine_craft_price(rec, rec_dict):
+    for ingr in rec.ingrs:
+        print("\tINGR: ", ingr.common_name)
+        recipe = lookup_recipe(ingr.common_name, rec_dict)
+        #print(ingr.common_name)
+        if recipe:  
+            print("\trecipe is craftable *************")   
+            ingr.is_craftable = True       
+            recipe.is_craftable = True
+            #print(recipe.is_craftable)
+            if recipe.should_be_crafted:
+                rec.sub_recipe.should_be_crafted = True
+                ingr.should_be_crafted = True
+            if recipe.total_craft_price != 0:
+                print("\t\t@@@ Using Current price for: ", recipe.common_name)
+                price, _ = determine_craft_price(recipe, rec_dict)
+                rec.total_craft_price += recipe.total_craft_price
+            else:
+                print("\t\t@@@ Looking up recipe: ", recipe.common_name)
+                price, rec_dict = determine_craft_price(recipe, rec_dict)
+                recipe.total_craft_price += float(price)
+        else:
+            rec.total_craft_price += float(ingr.buy_price) * int(ingr.qty)
+    if rec.total_craft_price < rec.buy_price:
+        rec.should_be_crafted = True
+    return rec.total_craft_price, rec_dict
+    
+
+def lookup_recipe(name, rec_dict):
+    for item in rec_dict:
+        if item[0] == name:
+            if item[1] is not None:
+                return item[1]
+
+def print_dict(rec_dict):
+    for item in rec_dict:
+        print(item[0])
+        
+        if item[1] is not None:
+            recipe = item[1]
+            for ingredient in recipe.ingrs:
+                print("\t" + ingredient.common_name)
+                print(ingredient.is_craftable)
+                if ingredient.is_craftable:
+                    temp_recipe = lookup_recipe(ingredient.common_name, rec_dict)
+                    print("\tCrafting Price: ", temp_recipe.total_craft_price)
+                    if temp_recipe.should_be_crafted:
+                        print("\tShould be crafted: ", True)
+                        total_cost = float(temp_recipe.total_craft_price) * int(ingredient.qty)
+                    else:
+                        total_cost = float(temp_recipe.buy_price) * int(ingredient.qty)
+                else:
+                    total_cost = float(ingredient.buy_price    )
+                print("\tQuantity: ", ingredient.qty)    
+                print("\tCost: ", total_cost)
+                
+                
+
+
+def make_or_buy(rec):
+    buy_item = False
+    make_price, buy_price, common_name = lowest_parent_recipe(rec)
+    if make_price > buy_price:
+        buy_item = True
+    return buy_item, common_name, buy_price, make_price
+
+
+def lowest_parent_recipe(rec):
+    while rec.has_sub_recipe:
+        rec = rec.sub_recipe
+    cost_of_one = int(rec.ingrs[0].qty) * float(rec.ingrs[0].buy_price)
+    rec_buy_price = rec.buy_price
+    return cost_of_one, rec_buy_price, rec.common_name
+
+
+def lookup_dump_data(item, reverse_lookup=False):
+    dict = constants.dict
+    trans_item = item
+    if reverse_lookup:
+        i = 0
+        while i < 10:
+            if item == dict[i][0]:
+                trans_item = dict[i][1]
+                break
+            i += 1
+    else:
+        for piece in dict:
+            if item == piece[1]:
+                trans_item = piece[0]
+                break
+    return trans_item
+
+def eliminate_unused(rec, rec_dic):  # TODO: Rename this
+        buy_item, name, buy_price, make_price = make_or_buy(rec)
+        # TODO: left buy_price here because I might want to do something with it.  If not remove it later.
+        total_cost = 0
+
+        loop_val = True
+        while loop_val:
+            if rec.has_sub_recipe:
+                if rec.sub_recipe.common_name == name:
+                    loop_val = False
+            else:
+                loop_val = False
+            for i in rec.ingrs:
+                this_price = i.buy_price
+                if i.common_name == name:
+                    if not buy_item:    # Crafting the item
+                        this_price = make_price
+                        i.buy_price = make_price
+                    else:               # Buying the item
+                        # this_price = buy_price
+                        pass
+                total_cost += float(i.buy_price) * int(i.qty)
+            rec = rec.sub_recipe  
 
 def pull_recipe(recipe_name):
     ingrlist = []
@@ -39,6 +192,7 @@ def pull_recipe(recipe_name):
         lines = file.readlines()
         for line in lines:
             if line.split(",")[0] == recipe_name:
+                #print("FOUND RECIPE: ", recipe_name)
                 # Recipe Found
                 # Check Ingredients required and add them to lists
                 if bool(line.split(",")[36]):  # Ingredient 1
@@ -81,7 +235,8 @@ def pull_recipe(recipe_name):
                             _t.can_be_crafted = True
                             _t_list.append(_t)
                         ingrlist = _t_list
-                        return Recipe(recipe_name, cname, ingrlist, r_prices[0], r_prices[1], has_sub_recipe, sub_recipe)
+                        return Recipe(recipe_name, cname, ingrlist, r_prices[0], r_prices[1], has_sub_recipe,
+                                      sub_recipe)
 
                 _t_list = []
                 for _i, _j in zip(ingrlist, qtylist):
