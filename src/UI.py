@@ -128,6 +128,10 @@ class Ui(QtWidgets.QWidget):
         # item2 = self.buyCombo.currentText() # TODO:  Logic to make sure the box has something
         trans_item = lookup_dump_data(item)
         # trans_item2 = lookup_dump_data(item2)
+
+        master_cookbook = recipes.build_cookbook()
+        print(master_cookbook.smelting.keys())
+
         test_recipe = recipes.pull_recipe(trans_item)  # TODO:  Fix to work with item2
         # TODO: here
         self.eliminate_unused(test_recipe)
