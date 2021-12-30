@@ -1,11 +1,13 @@
 import math
 import signal
 import sys
+import time
 import webbrowser
 
 from PyQt5 import QtWidgets, uic, QtCore
+from PyQt5.QtCore import QThread
 from PyQt5.QtGui import QDoubleValidator, QStandardItemModel, QStandardItem, QFont
-from PyQt5.QtWidgets import QMenuBar, QAction, QMessageBox
+from PyQt5.QtWidgets import QMenuBar, QAction, QMessageBox, QProgressBar
 
 import constants
 import recipes
@@ -36,6 +38,7 @@ class Ui(QtWidgets.QWidget):
         self.capital.textEdited.connect(self.update)
         self.text_info = self.findChild(QtWidgets.QLabel, "text_info")
         self.text_info.setAlignment(QtCore.Qt.AlignCenter)
+        self.skillCombo = self.findChild(QtWidgets.QComboBox, "skillCombo")
         self.buyCombo = self.findChild(QtWidgets.QComboBox, "buy_comboBox")
         self.buyCombo.currentTextChanged.connect(self.buy_combo_selected)
         self.sellCombo = self.findChild(QtWidgets.QComboBox, "sell_comboBox")
@@ -53,6 +56,7 @@ class Ui(QtWidgets.QWidget):
         self.sellFlip = self.findChild(QtWidgets.QLineEdit, "sellFlip")
         self.sellFlip.setReadOnly(True)
 
+        self.master_cookbook = recipes.build_cookbook()  # Build all recipes and ingredients then store them
         self.parent_indexes = []
         self.can_make = 0
         self.total_ingr_cost = 0
@@ -129,15 +133,12 @@ class Ui(QtWidgets.QWidget):
         trans_item = lookup_dump_data(item)
         # trans_item2 = lookup_dump_data(item2)
 
-        master_cookbook = recipes.build_cookbook()
-        print(master_cookbook.smelting.keys())
-
-        test_recipe = recipes.pull_recipe(trans_item)  # TODO:  Fix to work with item2
+        # test_recipe = recipes.pull_recipe(trans_item)  # TODO:  Fix to work with item2
         # TODO: here
-        self.eliminate_unused(test_recipe)
-        self.populate_treeview(test_recipe)  # Fill QTreeView
-        print("RECIPE NAME: ", str(test_recipe.common_name))
-        print("CRAFT PRICE: " + str(test_recipe.craft_price))
+        # self.eliminate_unused(test_recipe)
+        # self.populate_treeview(test_recipe)  # Fill QTreeView
+        # print("RECIPE NAME: ", str(test_recipe.common_name))
+        # print("CRAFT PRICE: " + str(test_recipe.craft_price))
 
     def fill_tree_values(self):
         index = self.parent_indexes
@@ -166,7 +167,7 @@ class Ui(QtWidgets.QWidget):
                         self.model.setData(t_qty.index(), total_quantity)
                         self.model.setData(t_cost.index(), total_cost)
             else:
-                if self.model.item(k,0).text() == some_name:
+                if self.model.item(k, 0).text() == some_name:
                     mult_quantity = True
                 k += 1
 
@@ -274,7 +275,7 @@ class Ui(QtWidgets.QWidget):
         if buy_item:  # If we're buying the item, use that price in calculations
             text = "You should <b><u><font color = \"Red\">BUY</font></u></b> the <u><b>" + \
                    name + "</b></u> from the <i>Selling</i> box for maximum profit."
-        else:   # Crafting the item
+        else:  # Crafting the item
             text = "You should <b><u><font color = \"Red\">CRAFT</font></u></b> the <u><b>" + \
                    name + "</b></u> from the <i>Selling</i> box for the maximum profit."
 
@@ -289,10 +290,10 @@ class Ui(QtWidgets.QWidget):
             for i in rec.ingrs:
                 this_price = i.buy_price
                 if i.common_name == name:
-                    if not buy_item:    # Crafting the item
+                    if not buy_item:  # Crafting the item
                         this_price = make_price
                         i.buy_price = make_price
-                    else:               # Buying the item
+                    else:  # Buying the item
                         # this_price = buy_price
                         pass
                 total_cost += float(i.buy_price) * int(i.qty)
@@ -303,6 +304,34 @@ class Ui(QtWidgets.QWidget):
         can_make = math.floor(float(self.capital.text()) / total_cost)
         self.sellQuantity.setText(str(can_make))
         self.can_make = can_make
+
+
+class ProgressDialog(QThread):
+    #progress_update = QtCore.Signal(int)
+
+    def __init__(self):
+        QThread.__init__(self)
+        dialog = QMessageBox(QMessageBox.NoIcon, "TITLE", "TEXT", QMessageBox.NoButton)
+        layout = dialog.layout()
+        layout.itemAtPosition(layout.rowCount() - 1, 0).widget().hide()
+
+        progress_bar = QProgressBar()
+        layout.addWidget(progress_bar, layout.rowCount(), 0, 1, layout.columnCount(), QtCore.Qt.AlignCenter)
+
+        dialog.show()
+
+    def __del__(self):
+        self.wait()
+
+    def run(self):
+        #  LOGIC
+        while 1:
+            max_value = 1
+            self.progress_update.emit(max_value)
+            time.sleep(1)
+
+    def updateProgressBar(self, max_value):
+        self.ProgressDialog.progress_bar.setValue(100)
 
 
 def make_or_buy(rec):
@@ -345,6 +374,8 @@ if __name__ == "__main__":
     dict = constants.dict
 
     app = QtWidgets.QApplication(sys.argv)
+
+    #pd = ProgressDialog()
     window = Ui()
     window.show()
     app.exec_()

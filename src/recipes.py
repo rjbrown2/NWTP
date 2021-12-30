@@ -112,8 +112,8 @@ def build_recipes():
 
 def sort_recipes():
     for recipe in unsorted_cookbook:
+        # TODO: POP them out
         tskill = recipe.trade_skill
-        print("sorting")
         if tskill == "Smelting":
             smelting_cookbook[recipe.recipe] = recipe
             for x in recipe.ingrs:
