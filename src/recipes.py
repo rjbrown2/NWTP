@@ -1,3 +1,6 @@
+import pickle
+from os.path import exists
+
 import constants
 import market_data
 
@@ -52,12 +55,12 @@ unsorted_cookbook = []
 
 
 def build_recipes():
-    ingrlist = []
-    qtylist = []
     try:
         file = open(constants.RECIPE_DUMP)
         lines = file.readlines()
         for line in lines:
+            ingrlist = []
+            qtylist = []
             line_split = line.split(",")
             if line_split[2] == "RefinedResources" or line_split[2] == "CutStone":
                 recipe_name = line.split(",")[0]
@@ -86,24 +89,22 @@ def build_recipes():
                     ingrlist.append(line_split[48])
                     qtylist.append(line_split[56])
 
-                for r in ingrlist:
-                    cname = name_to_common(recipe_name)
-                    r_prices = market_data.lookup_prices(cname)
+                cname = name_to_common(recipe_name)
+                r_prices = market_data.lookup_prices(cname)
 
-                    _ingr_list = []
-                    for _i, _j in zip(ingrlist, qtylist):
-                        icname = name_to_common(_i)
-                        if _i in constants.variable_ingrs:
-                            cheapest = determine_cheapest(_i)
-                            i_prices = market_data.lookup_prices(cheapest)
-                        else:
-                            i_prices = market_data.lookup_prices(icname)
-                        _t = Ingredient(_i, icname, _j, i_prices[0], i_prices[1])  # Create ingredient object
-                        _t.can_be_crafted = True
-                        _ingr_list.append(_t)
-                    # Create recipe object
-                    finished_recipe = Recipe(recipe_name, cname, trade_skill, _ingr_list, r_prices[0], r_prices[1])
-                    unsorted_cookbook.append(finished_recipe)
+                _ingr_list = []
+                for _i, _j in zip(ingrlist, qtylist):
+                    icname = name_to_common(_i)
+                    if _i in constants.variable_ingrs:
+                        cheapest = determine_cheapest(_i)
+                        i_prices = market_data.lookup_prices(cheapest)
+                    else:
+                        i_prices = market_data.lookup_prices(icname)
+                    _t = Ingredient(_i, icname, _j, i_prices[0], i_prices[1])  # Create ingredient object
+                    _ingr_list.append(_t)
+                # Create recipe object
+                finished_recipe = Recipe(recipe_name, cname, trade_skill, _ingr_list, r_prices[0], r_prices[1])
+                unsorted_cookbook.append(finished_recipe)
 
         file.close()
     except FileNotFoundError:
@@ -112,47 +113,62 @@ def build_recipes():
 
 def sort_recipes():
     for recipe in unsorted_cookbook:
-        # TODO: POP them out
         tskill = recipe.trade_skill
         if tskill == "Smelting":
             smelting_cookbook[recipe.recipe] = recipe
             for x in recipe.ingrs:
                 if x.ingredient in smelting_cookbook.keys():
+                    recipe.has_sub_recipe = True
                     recipe.sub_recipe = smelting_cookbook[x.ingredient]
-                    print(x.common_name + " sorted")
+                    unsorted_cookbook.pop(0)
 
         elif tskill == "Leatherworking":
             leatherworking_cookbook[recipe.recipe] = recipe
             for x in recipe.ingrs:
                 if x.ingredient in leatherworking_cookbook.keys():
+                    recipe.has_sub_recipe = True
                     recipe.sub_recipe = leatherworking_cookbook[x.ingredient]
+                    unsorted_cookbook.pop(0)
 
         elif tskill == "Weaving":
             weaving_cookbook[recipe.recipe] = recipe
             for x in recipe.ingrs:
                 if x.ingredient in weaving_cookbook.keys():
+                    recipe.has_sub_recipe = True
                     recipe.sub_recipe = weaving_cookbook[x.ingredient]
+                    unsorted_cookbook.pop(0)
 
         elif tskill == "Woodworking":
             woodworking_cookbook[recipe.recipe] = recipe
             for x in recipe.ingrs:
                 if x.ingredient in woodworking_cookbook.keys():
+                    recipe.has_sub_recipe = True
                     recipe.sub_recipe = woodworking_cookbook[x.ingredient]
+                    unsorted_cookbook.pop(0)
 
         elif tskill == "Stonecutting":
             stonecutting_cookbook[recipe.recipe] = recipe
             for x in recipe.ingrs:
                 if x.ingredient in stonecutting_cookbook.keys():
+                    recipe.has_sub_recipe = True
                     recipe.sub_recipe = stonecutting_cookbook[x.ingredient]
+                    unsorted_cookbook.pop(0)
         else:
             print(recipe.recipe + " was unsorted")
 
 
 def build_cookbook():
-    build_recipes()
-    sort_recipes()
-    master_cookbook = CookBook(smelting_cookbook, leatherworking_cookbook, weaving_cookbook,
-                               woodworking_cookbook, stonecutting_cookbook)
+    file_exists = exists(constants.RECIPE_DICT)
+    if not file_exists:
+        build_recipes()
+        sort_recipes()
+        master_cookbook = CookBook(smelting_cookbook, leatherworking_cookbook, weaving_cookbook,
+                                   woodworking_cookbook, stonecutting_cookbook)
+        with open(constants.RECIPE_DICT, "wb") as recipe_dictionary:
+            pickle.dump(master_cookbook, recipe_dictionary)
+    else:
+        with open(constants.RECIPE_DICT, "rb") as file:
+            master_cookbook = pickle.load(file)
     return master_cookbook
 
     # TODO: Add a way to determine the cheapest of "hide"

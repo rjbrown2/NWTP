@@ -39,6 +39,7 @@ class Ui(QtWidgets.QWidget):
         self.text_info = self.findChild(QtWidgets.QLabel, "text_info")
         self.text_info.setAlignment(QtCore.Qt.AlignCenter)
         self.skillCombo = self.findChild(QtWidgets.QComboBox, "skillCombo")
+        self.skillCombo.currentTextChanged.connect(self.skill_combo_selected)
         self.buyCombo = self.findChild(QtWidgets.QComboBox, "buy_comboBox")
         self.buyCombo.currentTextChanged.connect(self.buy_combo_selected)
         self.sellCombo = self.findChild(QtWidgets.QComboBox, "sell_comboBox")
@@ -60,6 +61,7 @@ class Ui(QtWidgets.QWidget):
         self.parent_indexes = []
         self.can_make = 0
         self.total_ingr_cost = 0
+        self.trade_skill = None
         #
         # End component initialization
         #
@@ -118,19 +120,47 @@ class Ui(QtWidgets.QWidget):
         if self.buyCombo.currentText() != "":
             self.buy_combo_selected()
 
+    def skill_combo_selected(self):
+        self.sellCombo.clear()
+        self.sellCombo.addItem("")
+        skill_text = self.skillCombo.currentText()
+        self.trade_skill = skill_text
+        if skill_text == "Smelting":
+            for recipe in self.master_cookbook.smelting.keys():
+                temp = self.master_cookbook.smelting[recipe]
+                self.sellCombo.addItem(temp.common_name)
+        elif skill_text == "Leatherworking":
+            for recipe in self.master_cookbook.leatherworking.keys():
+                temp = self.master_cookbook.leatherworking[recipe]
+                self.sellCombo.addItem(temp.common_name)
+        elif skill_text == "Weaving":
+            for recipe in self.master_cookbook.weaving.keys():
+                temp = self.master_cookbook.weaving[recipe]
+                self.sellCombo.addItem(temp.common_name)
+        elif skill_text == "Woodworking":
+            for recipe in self.master_cookbook.woodworking.keys():
+                temp = self.master_cookbook.woodworking[recipe]
+                self.sellCombo.addItem(temp.common_name)
+        elif skill_text == "Stonecutting":
+            for recipe in self.master_cookbook.stonecutting.keys():
+                temp = self.master_cookbook.stonecutting[recipe]
+                self.sellCombo.addItem(temp.common_name)
+
     def sell_combo_selected(self):
         if self.capital.text == "":
             self.reset_sell()
             return
 
         item = self.sellCombo.currentText()
-
+        if self.sellCombo.textActivated:
+            if item != "":
+                self.populate_treeview(item)
         if not item:
             self.reset_sell()
             return
         item = self.sellCombo.currentText()
         # item2 = self.buyCombo.currentText() # TODO:  Logic to make sure the box has something
-        trans_item = lookup_dump_data(item)
+        #trans_item = lookup_dump_data(item)
         # trans_item2 = lookup_dump_data(item2)
 
         # test_recipe = recipes.pull_recipe(trans_item)  # TODO:  Fix to work with item2
@@ -139,6 +169,7 @@ class Ui(QtWidgets.QWidget):
         # self.populate_treeview(test_recipe)  # Fill QTreeView
         # print("RECIPE NAME: ", str(test_recipe.common_name))
         # print("CRAFT PRICE: " + str(test_recipe.craft_price))
+
 
     def fill_tree_values(self):
         index = self.parent_indexes
@@ -174,13 +205,20 @@ class Ui(QtWidgets.QWidget):
     def populate_treeview(self, data_in):
         self.model.setRowCount(0)
         self.total_ingr_cost = 0
-        recipe = data_in
+        key = lookup_dump_data(data_in)
+        if self.trade_skill == "Smelting":
+            current_book = self.master_cookbook.smelting
+        recipe = current_book[key]
+        for each in recipe.ingrs:
+            print(each.common_name)
+        print(recipe.has_sub_recipe)
         self.parent_indexes = []  # Parent index list
         loop_trigger = True
         children = []  # Children index list
         while loop_trigger:
             children = []
             loop_trigger = recipe.has_sub_recipe
+            print(loop_trigger)
             parent_font = QFont("Segoe UI", 9, QFont.Bold)
             parent = QStandardItem(recipe.common_name)  # Parent Creation
             parent.setFont(parent_font)
@@ -354,12 +392,10 @@ def lookup_dump_data(item, reverse_lookup=False):
     dict = constants.dict
     trans_item = item
     if reverse_lookup:
-        i = 0
-        while i < 10:
-            if item == dict[i][0]:
-                trans_item = dict[i][1]
+        for piece in dict:
+            if item == piece[0]:
+                trans_item = piece[1]
                 break
-            i += 1
     else:
         for piece in dict:
             if item == piece[1]:
