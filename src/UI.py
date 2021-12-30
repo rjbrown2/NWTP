@@ -160,7 +160,7 @@ class Ui(QtWidgets.QWidget):
             return
         item = self.sellCombo.currentText()
         # item2 = self.buyCombo.currentText() # TODO:  Logic to make sure the box has something
-        #trans_item = lookup_dump_data(item)
+        # trans_item = lookup_dump_data(item)
         # trans_item2 = lookup_dump_data(item2)
 
         # test_recipe = recipes.pull_recipe(trans_item)  # TODO:  Fix to work with item2
@@ -169,7 +169,6 @@ class Ui(QtWidgets.QWidget):
         # self.populate_treeview(test_recipe)  # Fill QTreeView
         # print("RECIPE NAME: ", str(test_recipe.common_name))
         # print("CRAFT PRICE: " + str(test_recipe.craft_price))
-
 
     def fill_tree_values(self):
         index = self.parent_indexes
@@ -208,17 +207,24 @@ class Ui(QtWidgets.QWidget):
         key = lookup_dump_data(data_in)
         if self.trade_skill == "Smelting":
             current_book = self.master_cookbook.smelting
+        elif self.trade_skill == "Leatherworking":
+            current_book = self.master_cookbook.leatherworking
+        elif self.trade_skill == "Weaving":
+            current_book = self.master_cookbook.weaving
+        elif self.trade_skill == "Woodworking":
+            current_book = self.master_cookbook.woodworking
+        elif self.trade_skill == "Stonecutting":
+            current_book = self.master_cookbook.stonecutting
+        else:
+            return
+
         recipe = current_book[key]
-        for each in recipe.ingrs:
-            print(each.common_name)
-        print(recipe.has_sub_recipe)
         self.parent_indexes = []  # Parent index list
         loop_trigger = True
         children = []  # Children index list
         while loop_trigger:
             children = []
             loop_trigger = recipe.has_sub_recipe
-            print(loop_trigger)
             parent_font = QFont("Segoe UI", 9, QFont.Bold)
             parent = QStandardItem(recipe.common_name)  # Parent Creation
             parent.setFont(parent_font)
@@ -345,7 +351,7 @@ class Ui(QtWidgets.QWidget):
 
 
 class ProgressDialog(QThread):
-    #progress_update = QtCore.Signal(int)
+    # progress_update = QtCore.Signal(int)
 
     def __init__(self):
         QThread.__init__(self)
@@ -411,7 +417,7 @@ if __name__ == "__main__":
 
     app = QtWidgets.QApplication(sys.argv)
 
-    #pd = ProgressDialog()
+    # pd = ProgressDialog()
     window = Ui()
     window.show()
     app.exec_()

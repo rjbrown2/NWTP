@@ -62,9 +62,11 @@ def build_recipes():
             ingrlist = []
             qtylist = []
             line_split = line.split(",")
+            if line_split[0] in constants.IGNORED_RECIPES:
+                continue
             if line_split[2] == "RefinedResources" or line_split[2] == "CutStone":
-                recipe_name = line.split(",")[0]
-                trade_skill = line.split(",")[16]  # Trade skill associated with recipe
+                recipe_name = line_split[0]
+                trade_skill = line_split[16]  # Trade skill associated with recipe
 
                 # Check Ingredients required and add them to lists
                 if bool(line_split[36]):  # Ingredient 1
@@ -112,49 +114,68 @@ def build_recipes():
 
 
 def sort_recipes():
-    for recipe in unsorted_cookbook:
-        tskill = recipe.trade_skill
-        if tskill == "Smelting":
-            smelting_cookbook[recipe.recipe] = recipe
-            for x in recipe.ingrs:
-                if x.ingredient in smelting_cookbook.keys():
-                    recipe.has_sub_recipe = True
-                    recipe.sub_recipe = smelting_cookbook[x.ingredient]
-                    unsorted_cookbook.pop(0)
+    print("Sorting recipes...")
+    while len(unsorted_cookbook) > 0:
+        for recipe in unsorted_cookbook:
+            tskill = recipe.trade_skill
+            index = unsorted_cookbook.index(recipe)
+            if tskill == "Smelting":
+                smelting_cookbook[recipe.recipe] = recipe
+                unsorted_cookbook.pop(index)
 
-        elif tskill == "Leatherworking":
-            leatherworking_cookbook[recipe.recipe] = recipe
-            for x in recipe.ingrs:
-                if x.ingredient in leatherworking_cookbook.keys():
-                    recipe.has_sub_recipe = True
-                    recipe.sub_recipe = leatherworking_cookbook[x.ingredient]
-                    unsorted_cookbook.pop(0)
+            elif tskill == "Leatherworking":
+                leatherworking_cookbook[recipe.recipe] = recipe
+                unsorted_cookbook.pop(index)
 
-        elif tskill == "Weaving":
-            weaving_cookbook[recipe.recipe] = recipe
-            for x in recipe.ingrs:
-                if x.ingredient in weaving_cookbook.keys():
-                    recipe.has_sub_recipe = True
-                    recipe.sub_recipe = weaving_cookbook[x.ingredient]
-                    unsorted_cookbook.pop(0)
+            elif tskill == "Weaving":
+                weaving_cookbook[recipe.recipe] = recipe
+                unsorted_cookbook.pop(index)
 
-        elif tskill == "Woodworking":
-            woodworking_cookbook[recipe.recipe] = recipe
-            for x in recipe.ingrs:
-                if x.ingredient in woodworking_cookbook.keys():
-                    recipe.has_sub_recipe = True
-                    recipe.sub_recipe = woodworking_cookbook[x.ingredient]
-                    unsorted_cookbook.pop(0)
+            elif tskill == "Woodworking":
+                woodworking_cookbook[recipe.recipe] = recipe
+                unsorted_cookbook.pop(index)
 
-        elif tskill == "Stonecutting":
-            stonecutting_cookbook[recipe.recipe] = recipe
-            for x in recipe.ingrs:
-                if x.ingredient in stonecutting_cookbook.keys():
-                    recipe.has_sub_recipe = True
-                    recipe.sub_recipe = stonecutting_cookbook[x.ingredient]
-                    unsorted_cookbook.pop(0)
-        else:
-            print(recipe.recipe + " was unsorted")
+            elif tskill == "Stonecutting":
+                stonecutting_cookbook[recipe.recipe] = recipe
+                unsorted_cookbook.pop(index)
+            else:
+                print(recipe.recipe + " was unsorted")
+
+    print("Setting sub recipes...")
+    for recipe in smelting_cookbook.values():
+        for x in recipe.ingrs:
+            if x.ingredient != "CharcoalT1" and x.ingredient in smelting_cookbook.keys():
+                recipe.has_sub_recipe = True
+                recipe.sub_recipe = smelting_cookbook[x.ingredient]
+                break
+
+    for recipe in leatherworking_cookbook.values():
+        for x in recipe.ingrs:
+            if x.ingredient in leatherworking_cookbook.keys():
+                recipe.has_sub_recipe = True
+                recipe.sub_recipe = leatherworking_cookbook[x.ingredient]
+                break
+
+    for recipe in weaving_cookbook.values():
+        for x in recipe.ingrs:
+            if x.ingredient in weaving_cookbook.keys():
+                recipe.has_sub_recipe = True
+                recipe.sub_recipe = weaving_cookbook[x.ingredient]
+                break
+
+    for recipe in woodworking_cookbook.values():
+        for x in recipe.ingrs:
+            if x.ingredient in woodworking_cookbook.keys():
+                recipe.has_sub_recipe = True
+                recipe.sub_recipe = woodworking_cookbook[x.ingredient]
+                break
+
+    for recipe in stonecutting_cookbook.values():
+        for x in recipe.ingrs:
+            if x.ingredient in stonecutting_cookbook.keys():
+                recipe.has_sub_recipe = True
+                recipe.sub_recipe = stonecutting_cookbook[x.ingredient]
+                break
 
 
 def build_cookbook():

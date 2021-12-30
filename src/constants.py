@@ -3,6 +3,8 @@ RECIPE_DICT = "../config/recipe.pkl"
 MARKET_DATA_LOCAL = "../config/sheets_export.csv" # Saved local copy of sheets
 MARKET_DATA = "1k2PutG7ztqjg_CmQAE2s2sCkLudpyFxEKjuRmusb3oI"  # Google Sheets ID
 
+IGNORED_RECIPES = ["IngotT5Precious"]
+
 variable_ingrs = ["Wood"]
 
 dict = [
