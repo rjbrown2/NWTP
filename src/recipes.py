@@ -213,7 +213,6 @@ def modify_cookbooks(master_cookbook):
     mod_book = CookBook(return_list[0], return_list[1], return_list[2], return_list[3], return_list[4])
     return mod_book
 
-
     # TODO: Add a way to determine the cheapest of "hide"
     # TODO: Add a way to determine the cheapest of "fiber"
 

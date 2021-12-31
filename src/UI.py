@@ -40,20 +40,12 @@ class Ui(QtWidgets.QWidget):
         self.text_info.setAlignment(QtCore.Qt.AlignCenter)
         self.skillCombo = self.findChild(QtWidgets.QComboBox, "skillCombo")
         self.skillCombo.currentTextChanged.connect(self.skill_combo_selected)
-        self.buyCombo = self.findChild(QtWidgets.QComboBox, "buy_comboBox")
-        self.buyCombo.currentTextChanged.connect(self.buy_combo_selected)
         self.sellCombo = self.findChild(QtWidgets.QComboBox, "sell_comboBox")
         self.sellCombo.currentTextChanged.connect(self.sell_combo_selected)
-        self.buyQuantity = self.findChild(QtWidgets.QLineEdit, "buyQuantity")
-        self.buyQuantity.setReadOnly(True)
         self.sellQuantity = self.findChild(QtWidgets.QLineEdit, "sellQuantity")
         self.sellQuantity.setReadOnly(True)
-        self.buyIndividual = self.findChild(QtWidgets.QLineEdit, "buyIndividual")
-        self.buyIndividual.setReadOnly(True)
         self.sellIndividual = self.findChild(QtWidgets.QLineEdit, "sellIndividual")
         self.sellIndividual.setReadOnly(True)
-        self.buyFlip = self.findChild(QtWidgets.QLineEdit, "buyFlip")
-        self.buyFlip.setReadOnly(True)
         self.sellFlip = self.findChild(QtWidgets.QLineEdit, "sellFlip")
         self.sellFlip.setReadOnly(True)
 
@@ -161,6 +153,8 @@ class Ui(QtWidgets.QWidget):
 
     def fill_tree_values(self):
         index = self.parent_indexes
+        self.can_make = math.floor(float(self.capital.text()) / self.total_ingr_cost)
+        self.sellQuantity.setText(str(self.can_make))
         some_name = "Linen"
         mult_quantity = False
         mult_amount = 0
@@ -183,6 +177,7 @@ class Ui(QtWidgets.QWidget):
                             temp_cost = float(price.text())
                         total_quantity = temp_qty * self.can_make  # Total qty = qty * can make
                         total_cost = self.can_make * temp_cost  # Total cost = total qty * cost
+                        print("TOTAL COST?: " + str(total_cost))
                         self.model.setData(t_qty.index(), total_quantity)
                         self.model.setData(t_cost.index(), total_cost)
             else:
@@ -253,31 +248,6 @@ class Ui(QtWidgets.QWidget):
         self.text_info.setText(text)
         self.do_math(current_book)  # Do fucking math
 
-    def buy_combo_selected(self):
-        item = self.buyCombo.currentText()
-        if self.capital.text() == "" or not item:
-            self.reset_buy()
-            return
-
-        capital = float(self.capital.text())
-        can_buy, buy_individual, buy_flip = 0.0, 0.0, 0.0
-
-        p = market_data.lookup_prices(item)
-        buy_price, sell_price = p[0], p[1]
-
-        can_buy = math.floor(capital / buy_price)  # Can buy = floor(Capital / buy price)
-        buy_individual = sell_price * can_buy  # Buy individual = sell price * can_buy
-        buy_profit = buy_individual - capital  # Buy Profit = Buy individual - capital
-        self.buyQuantity.setText(str(can_buy))
-        self.buyIndividual.setText(str("{:.2f}".format(buy_individual)))
-
-        if buy_profit < 0:
-            self.buyFlip.setStyleSheet("color: red;")
-        else:
-            self.buyFlip.setStyleSheet("color: green;")
-
-        self.buyFlip.setText(str("{:.2f}".format(buy_profit)))
-
     # TODO: Finish this, might still have issues in recipe file
     def total_cost(self, recipe):
         for ingredient in recipe.ingrs:
@@ -294,7 +264,7 @@ class Ui(QtWidgets.QWidget):
 
         item = self.sellCombo.currentText()
         print(current_cookbook)
-        #self.total_cost(recipes.lookup_recipe(item, current_cookbook))
+        # self.total_cost(recipes.lookup_recipe(item, current_cookbook))
         print("MATH: COST: ", self.total_ingr_cost)
         # recipe = recipes.lookup_recipe(item)
 
@@ -317,43 +287,6 @@ class Ui(QtWidgets.QWidget):
             self.sellFlip.setStyleSheet("color: green;")
         self.sellFlip.setText(f_sell_flip)
         self.fill_tree_values()
-
-    def eliminate_unused(self, rec):  # TODO: Rename this
-        buy_item, name, buy_price, make_price = make_or_buy(rec)
-        # TODO: left buy_price here because I might want to do something with it.  If not remove it later.
-        total_cost = 0
-        if buy_item:  # If we're buying the item, use that price in calculations
-            text = "You should <b><u><font color = \"Red\">BUY</font></u></b> the <u><b>" + \
-                   name + "</b></u> from the <i>Selling</i> box for maximum profit."
-        else:  # Crafting the item
-            text = "You should <b><u><font color = \"Red\">CRAFT</font></u></b> the <u><b>" + \
-                   name + "</b></u> from the <i>Selling</i> box for the maximum profit."
-
-        self.text_info.setText(text)
-        loop_val = True
-        while loop_val:
-            if rec.has_sub_recipe:
-                if rec.sub_recipe.common_name == name:
-                    loop_val = False
-            else:
-                loop_val = False
-            for i in rec.ingrs:
-                this_price = i.buy_price
-                if i.common_name == name:
-                    if not buy_item:  # Crafting the item
-                        this_price = make_price
-                        i.buy_price = make_price
-                    else:  # Buying the item
-                        # this_price = buy_price
-                        pass
-                total_cost += float(i.buy_price) * int(i.qty)
-            rec = rec.sub_recipe
-        if self.capital.text() == "":
-            self.reset_sell()
-            return
-        can_make = math.floor(float(self.capital.text()) / total_cost)
-        self.sellQuantity.setText(str(can_make))
-        self.can_make = can_make
 
 
 class ProgressDialog(QThread):
